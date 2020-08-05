@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_conversations"
+        android:enabled="true"
+        android:title="Conversations"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_users"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:enabled="true"
+        android:title="Users"
+        app:showAsAction="ifRoom" />
+</menu>
