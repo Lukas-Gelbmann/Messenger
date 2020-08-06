@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Messenger</string>
+    <string name="users">Users</string>
+    <string name="conversations">Conversations</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="e_mail">E-Mail</string>
+    <string name="create_user">Create User</string>
+    <string name="type_message_here">Type message here ...</string>
+    <string name="send">send</string>
+    <string name="topic">Enter a topic name ...</string>
+    <string name="create_a_new_conversation">Create a new conversation</string>
 </resources>

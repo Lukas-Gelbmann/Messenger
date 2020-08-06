@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Messenger</string>
+    <string name="users">Benutzer</string>
+    <string name="conversations">Konversationen</string>
+    <string name="first_name">Vorname</string>
+    <string name="last_name">Nachname</string>
+    <string name="e_mail">E-Mail</string>
+    <string name="create_user">Nutzer erstellen</string>
+    <string name="type_message_here">"Nachricht eingeben ... "</string>
+    <string name="send">senden</string>
+    <string name="topic">Thema benennen</string>
+    <string name="create_a_new_conversation">Neue Konversation erstellen</string>
+</resources>

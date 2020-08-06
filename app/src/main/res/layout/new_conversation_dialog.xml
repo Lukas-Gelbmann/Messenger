@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
@@ -9,7 +9,11 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Create a new conversation" />
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="@string/create_a_new_conversation"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/conversation_topic"
@@ -20,6 +24,7 @@
         android:layout_marginRight="4dp"
         android:layout_marginBottom="16dp"
         android:fontFamily="sans-serif"
-        android:hint="topic"
-        android:inputType="text" />
+        android:hint="@string/topic"
+        android:inputType="text"
+        android:padding="8dp" />
 </LinearLayout>
