@@ -1,6 +1,5 @@
 package at.fhooe.mc.messenger
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -20,6 +19,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity(),
     NewConversationDialogFragment.NewConversationDialogListener {
+
+    companion object {
+        val serverIp = "http://192.168.1.191:8080/"
+        //"http://10.0.0.29:8080/"
+    }
+
     private var savedInstanceState: Bundle? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,7 +85,7 @@ class MainActivity : AppCompatActivity(),
         var service: PostConversationService? = null
         try {
             val retrofit = Retrofit.Builder()
-                .baseUrl("http://10.0.0.29:8080/")
+                .baseUrl(MainActivity.serverIp)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
             service = retrofit.create(PostConversationService::class.java)
@@ -96,7 +101,8 @@ class MainActivity : AppCompatActivity(),
                 response: Response<Conversation?>
             ) {
                 if (response.isSuccessful) {
-                    Toast.makeText(applicationContext, "conversation created", Toast.LENGTH_LONG).show()
+                    Toast.makeText(applicationContext, "conversation created", Toast.LENGTH_LONG)
+                        .show()
                 }
             }
 

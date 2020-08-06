@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import at.fhooe.mc.messenger.MainActivity
 
 import at.fhooe.mc.messenger.R
 import at.fhooe.mc.messenger.model.GetParticipantService
@@ -58,7 +59,7 @@ class ParticipantFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private fun fetchParticipants() {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://10.0.0.29:8080/")
+            .baseUrl(MainActivity.serverIp)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val participantService: GetParticipantService =

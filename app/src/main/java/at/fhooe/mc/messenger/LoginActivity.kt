@@ -33,7 +33,7 @@ class LoginActivity : AppCompatActivity() {
         mCreateButton = findViewById(R.id.button_createuser)
         try {
             val retrofit = Retrofit.Builder()
-                .baseUrl("http://10.0.0.29:8080/")
+                .baseUrl(MainActivity.serverIp)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
             service = retrofit.create(PostParticipantService::class.java)
