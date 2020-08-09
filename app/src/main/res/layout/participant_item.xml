@@ -10,9 +10,8 @@
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:contentDescription="Icon" />
 
     <TextView
@@ -20,7 +19,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_toEndOf="@id/participant_imageView"
-        android:layout_toRightOf="@id/participant_imageView"
         android:gravity="center_vertical"
         android:textSize="16sp"/>
 

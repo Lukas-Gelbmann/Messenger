@@ -111,10 +111,8 @@ class MessagingActivity : AppCompatActivity() {
                 response: Response<Message?>
             ) {
                 if (response.isSuccessful) {
-                    Toast.makeText(applicationContext, "message sent", Toast.LENGTH_LONG)
-                        .show()
                     messageText.setText("")
-                    viewAdapter.notifyDataSetChanged()
+                    fetchMessages() // TODO replace with better reloading?
                 }
             }
 

@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="48dp">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_container"
@@ -28,6 +29,6 @@
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
         android:onClick="createNewConversation"
-        android:src="@drawable/ic_home_black_24dp" />
+        android:src="@drawable/ic_add" />
 
 </LinearLayout>

@@ -27,7 +27,7 @@ class MessageAdapter : RecyclerView.Adapter<ViewHolder>() {
         notifyDataSetChanged()
     }
 
-    inner class ViewHolder(val binding: MessageItemBinding) :
+    inner class ViewHolder(private val binding: MessageItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Message) {
             binding.message = item

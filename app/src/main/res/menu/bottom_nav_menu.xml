@@ -5,10 +5,11 @@
         android:id="@+id/action_conversations"
         android:enabled="true"
         android:title="@string/conversations"
+        android:icon="@drawable/ic_message"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_users"
-        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:icon="@drawable/ic_user"
         android:enabled="true"
         android:title="@string/users"
         app:showAsAction="ifRoom" />

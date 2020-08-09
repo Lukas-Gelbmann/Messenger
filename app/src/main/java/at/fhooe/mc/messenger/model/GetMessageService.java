@@ -19,10 +19,14 @@ public interface GetMessageService {
             @Query("conversationId") String id
     );
 
-    @GET("/api/messages") //e.g. api/messages?conversationId.equals=2
-    Call<List<Message>> getMessagesForConversation( @Query("conversationId.equals") String conversationId);
+    //e.g. api/messages?conversationId.equals=2
+    @GET("/api/messages")
+    Call<List<Message>> getMessagesForConversation(@Query("conversationId.equals") String conversationId);
 
     @GET("/api/messages/{id}")
     Call<List<Message>> getMessage(@Path("id") String id);
+
+    @GET("/api/messages")
+    Call<List<Message>> getMessageForParticipant(@Query("receiverId.equals") String receiverId);
 }
 

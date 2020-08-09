@@ -53,8 +53,8 @@ class MainActivity : AppCompatActivity(),
                 .replace(R.id.container, fragment, fragment.javaClass.simpleName)
                 .commit()
         }
-        val id = this.getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("userId", "0")
-        this.title = id
+        //val id = this.getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("userId", "0")
+        //this.title = id
 
         val bottomNavigationView = findViewById<View>(R.id.bottom_nav_view) as BottomNavigationView
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->

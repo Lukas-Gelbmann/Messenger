@@ -29,9 +29,9 @@
             android:layout_weight="1"
             android:backgroundTint="@android:color/white"
             android:hint="@string/type_message_here"
-            android:inputType="textAutoComplete"
-            android:maxLines="1"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:inputType="text"
+            android:maxLines="0"/>
 
         <Button
             android:id="@+id/button_send_message"
