@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity(),
     NewConversationDialogFragment.NewConversationDialogListener {
 
     companion object {
+        const val TAG = "Messenger"
         const val serverIp = "http://192.168.1.191:8080/"
         //"http://10.0.0.29:8080/"
     }
