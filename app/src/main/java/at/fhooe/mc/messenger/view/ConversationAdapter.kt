@@ -2,7 +2,6 @@ package at.fhooe.mc.messenger.view
 
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnLongClickListener
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +11,7 @@ import at.fhooe.mc.messenger.model.Conversation
 
 class ConversationAdapter : RecyclerView.Adapter<ConversationAdapter.ConversationViewHolder>() {
     private var conversations: List<Conversation> = listOf()
+
     companion object {
         var clickListener: ClickListener? = null
     }
@@ -26,7 +26,8 @@ class ConversationAdapter : RecyclerView.Adapter<ConversationAdapter.Conversatio
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ConversationViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.conversation_item, parent, false) as View
+        val itemView = LayoutInflater.from(parent.context)
+            .inflate(R.layout.conversation_item, parent, false) as View
         // set the view's size, margins, paddings and layout parameters
         return ConversationViewHolder(itemView)
     }
@@ -38,12 +39,17 @@ class ConversationAdapter : RecyclerView.Adapter<ConversationAdapter.Conversatio
     }
 
 
-    fun setConversations(conversations: List<Conversation>){
+    fun setConversations(conversations: List<Conversation>) {
         this.conversations = conversations
         notifyDataSetChanged()
     }
 
-    class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener{
+    fun getConversationId(index: Int): String {
+        return conversations[index].id
+    }
+
+    class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+        View.OnClickListener {
         val conversationTopic: TextView = this.itemView.findViewById(R.id.conversation_textview)
 
         init {
@@ -56,7 +62,6 @@ class ConversationAdapter : RecyclerView.Adapter<ConversationAdapter.Conversatio
             }
         }
     }
-
 
 
 }

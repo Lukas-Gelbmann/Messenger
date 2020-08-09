@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity(),
     NewConversationDialogFragment.NewConversationDialogListener {
 
     companion object {
-        val serverIp = "http://192.168.1.191:8080/"
+        const val serverIp = "http://192.168.1.191:8080/"
         //"http://10.0.0.29:8080/"
     }
 
@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity(),
         var service: PostConversationService? = null
         try {
             val retrofit = Retrofit.Builder()
-                .baseUrl(MainActivity.serverIp)
+                .baseUrl(serverIp)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
             service = retrofit.create(PostConversationService::class.java)

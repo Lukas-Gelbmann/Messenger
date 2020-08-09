@@ -51,8 +51,8 @@ class ConversationFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         viewAdapter = ConversationAdapter()
         viewAdapter.setOnItemClickListener(object : ClickListener {
             override fun onItemClick(position: Int, view: View) {
-                Log.d("xdd", "onItemClick position: " + position)
-                openConversation(position)
+                val conversationId = viewAdapter.getConversationId(position)
+                openConversation(conversationId)
             }
         })
 
@@ -66,7 +66,7 @@ class ConversationFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
 
     override fun onRefresh() {
-        fetchConversations();
+        fetchConversations()
     }
 
     private fun fetchConversations() {
@@ -98,8 +98,10 @@ class ConversationFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
 
-    private fun openConversation(position: Int) {
-        startActivity(Intent(context, MessagingActivity::class.java))
+    private fun openConversation(id: String) {
+        val intent = Intent(context, MessagingActivity::class.java)
+        intent.putExtra("CONVERSATION_ID", id)
+        startActivity(intent)
     }
 
 }

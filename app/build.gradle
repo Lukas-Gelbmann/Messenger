@@ -28,6 +28,11 @@ android {
         }
     }
 
+
+    dataBinding {
+        enabled = true
+    }
+
 // To inline the bytecode built with JVM target 1.8 into
 // bytecode that is being built with JVM target 1.6. (e.g. navArgs)
 
@@ -36,6 +41,22 @@ android {
         jvmTarget = "1.8"
     }
 
+}
+
+
+
+
+sourceSets {
+    main {
+        java {
+            srcDir "${buildDir}/generated/source/kapt/main"
+        }
+    }
+    test {
+        java {
+            srcDir 'src/test/java'
+        }
+    }
 }
 
 dependencies {

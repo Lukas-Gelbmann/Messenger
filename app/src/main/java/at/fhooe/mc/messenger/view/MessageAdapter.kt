@@ -1,63 +1,39 @@
 package at.fhooe.mc.messenger.view
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import at.fhooe.mc.messenger.R
+import at.fhooe.mc.messenger.databinding.MessageItemBinding
 import at.fhooe.mc.messenger.model.Message
+import at.fhooe.mc.messenger.view.MessageAdapter.ViewHolder
 
-class MessageAdapter : RecyclerView.Adapter<MessageAdapter.MessageViewHolder>() {
+class MessageAdapter : RecyclerView.Adapter<ViewHolder>() {
 
     private var messages: List<Message> = listOf()
 
-    companion object {
-        var clickListener: ClickListener? = null
-    }
-
-    fun setOnItemClickListener(clickListener: ClickListener) {
-        Companion.clickListener = clickListener
-    }
-
-
-    interface ClickListener {
-        fun onItemClick(position: Int, view: View);
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
-        val itemView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.message_item, parent, false) as View
-        return MessageViewHolder(itemView)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = MessageItemBinding.inflate(inflater)
+        return ViewHolder(binding)
     }
 
     override fun getItemCount() = messages.size
 
-    override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
-        holder.messageContent.text = messages[position].content
-    }
-
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) =
+        holder.bind(messages[position])
 
     fun setMessages(messages: List<Message>) {
         this.messages = messages
         notifyDataSetChanged()
     }
 
-    class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-        View.OnClickListener {
-        val messageContent: TextView = this.itemView.findViewById(R.id.message_textView)
-
-        init {
-            itemView.setOnClickListener(this)
-        }
-
-        override fun onClick(v: View?) {
-            if (v != null) {
-                clickListener!!.onItemClick(adapterPosition, v)
-            }
+    inner class ViewHolder(val binding: MessageItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: Message) {
+            binding.message = item
+            binding.executePendingBindings()
         }
     }
-
 
 }
 

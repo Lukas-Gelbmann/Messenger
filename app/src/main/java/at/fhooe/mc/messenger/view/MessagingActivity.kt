@@ -24,22 +24,21 @@ class MessagingActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: MessageAdapter
-    private lateinit var viewManager: RecyclerView.LayoutManager
+    private lateinit var viewManager: LinearLayoutManager
     private lateinit var messageText: EditText
     lateinit var messages: List<Message>
+
+    private lateinit var userId: String
+    private lateinit var conversationId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_messaging)
 
-        viewAdapter = MessageAdapter()
-        viewAdapter.setOnItemClickListener(object : MessageAdapter.ClickListener {
-            override fun onItemClick(position: Int, view: View) {
-                Log.d("xdd", "onItemClick position: $position")
-            }
-        })
-
         viewManager = LinearLayoutManager(applicationContext)
+
+        viewManager.stackFromEnd = true // "scroll to bottom"
+
         viewAdapter = MessageAdapter()
 
         recyclerView = findViewById(R.id.message_list)
@@ -52,8 +51,11 @@ class MessagingActivity : AppCompatActivity() {
             sendMessage()
         }
 
-        fetchMessages()
+        userId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("userId", "0")!!
+        conversationId = intent.getStringExtra("CONVERSATION_ID")!!
+        Toast.makeText(this, "conversation id: $conversationId", Toast.LENGTH_SHORT).show()
 
+        fetchMessages()
     }
 
     private fun fetchMessages() {
@@ -65,7 +67,7 @@ class MessagingActivity : AppCompatActivity() {
         val messageService = retrofit.create(GetMessageService::class.java)
 
         val messagesCall: Call<List<Message>> =
-            messageService.fetchAllMessages() // TODO only messages from conversation
+            messageService.getMessagesForConversation(conversationId)
         messagesCall.enqueue(object : Callback<List<Message>> {
             override fun onResponse(
                 call: Call<List<Message>>,
@@ -96,7 +98,11 @@ class MessagingActivity : AppCompatActivity() {
         }
 
         val content = messageText.text.toString()
-        val message = Message(content, "2", "4", "1")
+
+        if (content == "")
+            return // don't send empty messages
+
+        val message = Message(content, conversationId, userId, "1")
 
         val call: Call<Message> = service!!.createMessage(message)
         call.enqueue(object : Callback<Message> {
@@ -108,6 +114,7 @@ class MessagingActivity : AppCompatActivity() {
                     Toast.makeText(applicationContext, "message sent", Toast.LENGTH_LONG)
                         .show()
                     messageText.setText("")
+                    viewAdapter.notifyDataSetChanged()
                 }
             }
 
