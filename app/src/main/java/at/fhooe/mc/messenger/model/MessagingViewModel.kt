@@ -55,6 +55,7 @@ class MessagingViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<Message?>, t: Throwable) {
+
                 Log.e(MainActivity.TAG, "sending data failed")
             }
         })

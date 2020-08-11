@@ -54,14 +54,20 @@ class LoginActivity : AppCompatActivity() {
                 call: Call<Participant?>?,
                 response: Response<Participant?>
             ) {
-                if(response.isSuccessful) {
+                if (response.isSuccessful) {
                     val prefs = applicationContext.getSharedPreferences("PREFERENCE", MODE_PRIVATE)
                     prefs.edit().putBoolean("isFirstRun", false).apply()
                     prefs.edit().putString("userId", response.body()?.id).apply()
                     val returnIntent = Intent()
                     setResult(Activity.RESULT_OK, returnIntent)
                     finish()
-                }
+                } else
+                    Toast.makeText(
+                        applicationContext,
+                        "sending data failed",
+                        Toast.LENGTH_LONG
+                    ).show()
+
             }
 
             override fun onFailure(call: Call<Participant?>, t: Throwable) {

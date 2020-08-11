@@ -20,7 +20,7 @@ public interface GetMessageService {
     );
 
     //e.g. api/messages?conversationId.equals=2
-    @GET("/api/messages")
+    @GET("/api/messages?sort=createdDate,asc")
     Call<List<Message>> getMessagesForConversation(@Query("conversationId.equals") String conversationId);
 
     @GET("/api/messages/{id}")

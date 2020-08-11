@@ -1,11 +1,18 @@
 package at.fhooe.mc.messenger.model;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity
 public class Participant {
 
     public String createdBy;
     public String createdDate;
     public String lastModifiedBy;
     public String lastModifiedDate;
+    @NonNull
+    @PrimaryKey(autoGenerate = false)
     public String id;
     public String firstName;
     public String lastName;

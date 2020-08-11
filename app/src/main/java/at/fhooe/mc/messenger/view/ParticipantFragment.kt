@@ -8,10 +8,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import at.fhooe.mc.messenger.MainActivity
 
 import at.fhooe.mc.messenger.R
+import at.fhooe.mc.messenger.model.AppDatabase
 import at.fhooe.mc.messenger.model.GetParticipantService
 import at.fhooe.mc.messenger.model.Participant
 import retrofit2.Call
@@ -58,6 +60,12 @@ class ParticipantFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun fetchParticipants() {
+        val db =
+            context?.let {
+                Room.databaseBuilder(it, AppDatabase::class.java, "Messenger")
+                    .allowMainThreadQueries().build()
+            }
+
         val retrofit = Retrofit.Builder()
             .baseUrl(MainActivity.serverIp)
             .addConverterFactory(GsonConverterFactory.create())
@@ -70,14 +78,21 @@ class ParticipantFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 call: Call<List<Participant>>,
                 response: Response<List<Participant>>
             ) {
-                if (!response.isSuccessful)
-                    return
-                participants = response.body()!!
+                if (!response.isSuccessful) {
+                    participants = db!!.participantDao().participants
+                } else {
+                    participants = response.body()!!
+                    for (participant in participants)
+                        db!!.participantDao().insert(participant)
+                }
                 viewAdapter.setParticipants(participants)
                 swipeRefreshLayout.isRefreshing = false
+
             }
 
             override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
+                participants = db!!.participantDao().participants
+                viewAdapter.setParticipants(participants)
                 swipeRefreshLayout.isRefreshing = false
                 Toast.makeText(context, "fetching data failed", Toast.LENGTH_LONG).show()
             }

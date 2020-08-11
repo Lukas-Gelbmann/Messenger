@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import at.fhooe.mc.messenger.R
+import at.fhooe.mc.messenger.model.Conversation
 import at.fhooe.mc.messenger.model.Message
 import at.fhooe.mc.messenger.model.MessagingViewModel
 
@@ -22,7 +23,7 @@ class MessagingActivity : AppCompatActivity() {
     private lateinit var messageText: EditText
 
     private lateinit var userId: String
-    private lateinit var conversationId: String
+    private lateinit var conversation: Conversation
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,12 +46,15 @@ class MessagingActivity : AppCompatActivity() {
             messageText.setText("")
         }
 
+
+
         userId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("userId", "0")!!
-        conversationId = intent.getStringExtra("CONVERSATION_ID")!!
-        Toast.makeText(this, "conversation id: $conversationId", Toast.LENGTH_SHORT).show()
+        conversation = intent.getParcelableExtra<Conversation>("CONVERSATION_ID")
+        title = conversation.topic
+        Toast.makeText(this, "conversation id: ${conversation.id}", Toast.LENGTH_SHORT).show()
 
         val model: MessagingViewModel by viewModels()
-        model.conversationId = conversationId
+        model.conversationId = conversation.id
         model.userId = userId
 
         model.getMessages().observe(this, Observer<List<Message>> { messages ->

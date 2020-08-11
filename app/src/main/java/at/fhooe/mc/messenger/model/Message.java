@@ -1,8 +1,15 @@
 package at.fhooe.mc.messenger.model;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity
 public class Message {
 
     public String content;
+    @NonNull
+    @PrimaryKey(autoGenerate = false)
     public String id;
     public String conversationId;
     public String senderId;

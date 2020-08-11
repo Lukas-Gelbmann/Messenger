@@ -6,6 +6,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
+import androidx.room.Room
+import at.fhooe.mc.messenger.model.AppDatabase
 import at.fhooe.mc.messenger.model.Conversation
 import at.fhooe.mc.messenger.model.PostConversationService
 import at.fhooe.mc.messenger.view.ConversationFragment
@@ -22,8 +24,8 @@ class MainActivity : AppCompatActivity(),
 
     companion object {
         const val TAG = "Messenger"
-        const val serverIp = "http://192.168.1.191:8080/"
-        //"http://10.0.0.29:8080/"
+        //const val serverIp = "http://192.168.1.191:8080/"
+        const val serverIp = "http://10.0.0.29:8080/"
     }
 
     private var savedInstanceState: Bundle? = null
@@ -48,6 +50,9 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun initComponents() {
+
+
+
         if (savedInstanceState == null) {
             val fragment = ConversationFragment()
             supportFragmentManager.beginTransaction()

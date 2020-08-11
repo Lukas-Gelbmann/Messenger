@@ -10,10 +10,12 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import at.fhooe.mc.messenger.LoginActivity
 import at.fhooe.mc.messenger.MainActivity
 import at.fhooe.mc.messenger.R
+import at.fhooe.mc.messenger.model.AppDatabase
 import at.fhooe.mc.messenger.model.Conversation
 import at.fhooe.mc.messenger.model.GetConversationService
 import at.fhooe.mc.messenger.view.ConversationAdapter.ClickListener
@@ -51,8 +53,8 @@ class ConversationFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         viewAdapter = ConversationAdapter()
         viewAdapter.setOnItemClickListener(object : ClickListener {
             override fun onItemClick(position: Int, view: View) {
-                val conversationId = viewAdapter.getConversationId(position)
-                openConversation(conversationId)
+                val conversation = viewAdapter.getConversation(position)
+                openConversation(conversation)
             }
         })
 
@@ -70,6 +72,12 @@ class ConversationFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun fetchConversations() {
+        val db =
+            context?.let {
+                Room.databaseBuilder(it, AppDatabase::class.java, "Messenger")
+                    .allowMainThreadQueries().build()
+            }
+
         val retrofit = Retrofit.Builder()
             .baseUrl(MainActivity.serverIp)
             .addConverterFactory(GsonConverterFactory.create())
@@ -83,14 +91,20 @@ class ConversationFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 call: Call<List<Conversation>>,
                 response: Response<List<Conversation>>
             ) {
-                if (!response.isSuccessful)
-                    return
-                conversations = response.body()!!
+                if (!response.isSuccessful) {
+                    conversations = db!!.conversationDao().conversations
+                } else {
+                    conversations = response.body()!!
+                    for (conversation in conversations)
+                        db!!.conversationDao().insert(conversation)
+                }
                 viewAdapter.setConversations(conversations)
                 swipeRefreshLayout.isRefreshing = false
             }
 
             override fun onFailure(call: Call<List<Conversation>>, t: Throwable) {
+                conversations = db!!.conversationDao().conversations
+                viewAdapter.setConversations(conversations)
                 swipeRefreshLayout.isRefreshing = false
                 Toast.makeText(context, "fetching data failed", Toast.LENGTH_LONG).show()
             }
@@ -98,9 +112,9 @@ class ConversationFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
 
-    private fun openConversation(id: String) {
+    private fun openConversation(conversation: Conversation) {
         val intent = Intent(context, MessagingActivity::class.java)
-        intent.putExtra("CONVERSATION_ID", id)
+        intent.putExtra("CONVERSATION_ID", conversation)
         startActivity(intent)
     }
 

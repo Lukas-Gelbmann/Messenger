@@ -44,8 +44,8 @@ class ConversationAdapter : RecyclerView.Adapter<ConversationAdapter.Conversatio
         notifyDataSetChanged()
     }
 
-    fun getConversationId(index: Int): String {
-        return conversations[index].id
+    fun getConversation(index: Int): Conversation {
+        return conversations[index]
     }
 
     class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
