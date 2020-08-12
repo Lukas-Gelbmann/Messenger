@@ -13,6 +13,9 @@ public interface MessageDao {
     @Query("SELECT * FROM message")
     List<Message> getMessages();
 
+    @Query("SELECT * FROM message WHERE conversationId = :conversationID ORDER BY createdDate")
+    List<Message> getMessages(String conversationID);
+
     @Query("SELECT * FROM message WHERE id = :id")
     Message getMessage(String id);
 

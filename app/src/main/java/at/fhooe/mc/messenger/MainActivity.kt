@@ -24,8 +24,8 @@ class MainActivity : AppCompatActivity(),
 
     companion object {
         const val TAG = "Messenger"
-        //const val serverIp = "http://192.168.1.191:8080/"
-        const val serverIp = "http://10.0.0.29:8080/"
+        const val serverIp = "http://192.168.1.191:8080/"
+        //const val serverIp = "http://10.0.0.29:8080/"
     }
 
     private var savedInstanceState: Bundle? = null

@@ -13,6 +13,7 @@ import at.fhooe.mc.messenger.R
 import at.fhooe.mc.messenger.model.Conversation
 import at.fhooe.mc.messenger.model.Message
 import at.fhooe.mc.messenger.model.MessagingViewModel
+import at.fhooe.mc.messenger.model.MessagingViewModelFactory
 
 class MessagingActivity : AppCompatActivity() {
 
@@ -46,18 +47,20 @@ class MessagingActivity : AppCompatActivity() {
             messageText.setText("")
         }
 
-
-
         userId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("userId", "0")!!
         conversation = intent.getParcelableExtra<Conversation>("CONVERSATION_ID")
         title = conversation.topic
         Toast.makeText(this, "conversation id: ${conversation.id}", Toast.LENGTH_SHORT).show()
 
-        val model: MessagingViewModel by viewModels()
-        model.conversationId = conversation.id
-        model.userId = userId
+        val model: MessagingViewModel by viewModels() {
+            MessagingViewModelFactory(
+                application,
+                conversation.id,
+                userId
+            )
+        }
 
-        model.getMessages().observe(this, Observer<List<Message>> { messages ->
+        model.messages.observe(this, Observer<List<Message>> { messages ->
             viewAdapter.setMessages(messages)
         })
         mModel = model
