@@ -14,7 +14,7 @@ public interface GetConversationService {
             "Content-type: application/json"
 
     })
-    @GET("/api/conversations?sort=createdDate,asc")
+    @GET("/api/conversations?sort=createdDate,asc&page=0&size=1000") //TODO pagination logic
     Call<List<Conversation>> fetchAllConversations();
 
     @GET("/api/conversations/{id}")

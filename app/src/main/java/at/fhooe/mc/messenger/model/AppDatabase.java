@@ -10,6 +10,8 @@ import androidx.room.RoomDatabase;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import at.fhooe.mc.messenger.MainActivity;
+
 @Database(entities = {Message.class, Conversation.class, Participant.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract MessageDao messageDao();
@@ -28,7 +30,7 @@ public abstract class AppDatabase extends RoomDatabase {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            AppDatabase.class, "Messenger")
+                            AppDatabase.class, MainActivity.DATABASE_NAME)
                             .build();
                 }
             }

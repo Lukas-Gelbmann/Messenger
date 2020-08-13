@@ -6,9 +6,17 @@
     <string name="last_name">Last Name</string>
     <string name="e_mail">E-Mail</string>
     <string name="create_user">Create User</string>
-    <string name="type_message_here">Type message here ...</string>
+    <string name="type_message_here">Type message here …</string>
     <string name="send">send</string>
-    <string name="topic">Enter a topic name ...</string>
+    <string name="topic">Enter a topic name …</string>
     <string name="create_a_new_conversation">Create a new conversation</string>
     <string name="user_avatar">user avatar</string>
+    <string name="creating_topic_failed">Creating topic failed!</string>
+    <string name="new_topic_created">New topic created!</string>
+    <string name="user_creation_failed">Cannot create user. Still downloading information …</string>
+    <string name="user_created">User created</string>
+    <string name="creating_user_failed">Creating user failed</string>
+    <string name="create">Create</string>
+    <string name="cancel">Cancel</string>
+    <string name="new_message_from">\"New Message from \"</string>
 </resources>

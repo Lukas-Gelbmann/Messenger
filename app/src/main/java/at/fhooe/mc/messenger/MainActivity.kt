@@ -28,8 +28,9 @@ class MainActivity : AppCompatActivity(),
         private lateinit var mScheduler: JobScheduler
         const val TAG = "Messenger"
         const val PARTICIPANT_ID = "1"
-        const val serverIp = "http://192.168.1.191:8080/"
-        //const val serverIp = "http://10.0.0.128:8080/"
+        const val DATABASE_NAME = "Messenger"
+        //const val serverIp = "http://192.168.1.191:8080/"
+        const val serverIp = "http://10.0.0.128:8080/"
     }
 
     private var savedInstanceState: Bundle? = null
@@ -52,7 +53,7 @@ class MainActivity : AppCompatActivity(),
     private fun fetchAllParticipants() {
         val db =
             application.let {
-                Room.databaseBuilder(it, AppDatabase::class.java, "Messenger")
+                Room.databaseBuilder(it, AppDatabase::class.java, DATABASE_NAME)
                     .allowMainThreadQueries().build()
             }
 
@@ -148,13 +149,13 @@ class MainActivity : AppCompatActivity(),
                 response: Response<Conversation?>
             ) {
                 if (response.isSuccessful) {
-                    Toast.makeText(applicationContext, "conversation created", Toast.LENGTH_LONG)
+                    Toast.makeText(applicationContext, getString(R.string.new_topic_created), Toast.LENGTH_LONG)
                         .show()
                 }
             }
 
             override fun onFailure(call: Call<Conversation?>, t: Throwable) {
-                Toast.makeText(applicationContext, "sending data failed", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, getString(R.string.creating_topic_failed), Toast.LENGTH_LONG).show()
             }
         })
 

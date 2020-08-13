@@ -31,7 +31,7 @@ class MessageRepository(private val application: Application) {
     private fun fetchMessages(conversationId: String) {
         val db =
             application.let {
-                Room.databaseBuilder(it, AppDatabase::class.java, "Messenger")
+                Room.databaseBuilder(it, AppDatabase::class.java, MainActivity.DATABASE_NAME)
                     .allowMainThreadQueries().build()
             }
 
@@ -68,7 +68,7 @@ class MessageRepository(private val application: Application) {
 
         val message = Message(content, conversationId, userId, MainActivity.PARTICIPANT_ID)
 
-        val call: Call<Message> = service!!.createMessage(message)
+        val call: Call<Message> = service.createMessage(message)
         call.enqueue(object : Callback<Message> {
             override fun onResponse(
                 call: Call<Message?>?,
@@ -91,7 +91,7 @@ class MessageRepository(private val application: Application) {
     fun getParticipant(id: String): Participant {
         val db =
             application.let {
-                Room.databaseBuilder(it, AppDatabase::class.java, "Messenger")
+                Room.databaseBuilder(it, AppDatabase::class.java, MainActivity.DATABASE_NAME)
                     .allowMainThreadQueries().build()
             }
 

@@ -14,7 +14,7 @@ public interface GetParticipantService {
 
     })
 
-    @GET("/api/participants")
+    @GET("/api/participants?sort=createdDate,asc&page=0&size=1000") //TODO pagination logic
     Call<List<Participant>> fetchAllParticipants();
 
 

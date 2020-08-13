@@ -14,19 +14,14 @@ public interface GetMessageService {
             "Content-type: application/json"
     })
 
-    @GET("/api/messages")
-    Call<List<Message>> getAllMessages(
-            @Query("conversationId") String id
-    );
-
     //e.g. api/messages?conversationId.equals=2
-    @GET("/api/messages?sort=createdDate,asc&page=0&size=1000") //TODO pagination
+    @GET("/api/messages?sort=createdDate,asc&page=0&size=1000") //TODO pagination logic
     Call<List<Message>> getMessagesForConversation(@Query("conversationId.equals") String conversationId);
 
     @GET("/api/messages/{id}")
     Call<List<Message>> getMessage(@Path("id") String id);
 
-    @GET("/api/messages")
+    @GET("/api/messages?sort=createdDate,asc&page=0&size=1000") //TODO pagination logic
     Call<List<Message>> getMessagesForParticipant(@Query("receiverId.equals") String receiverId);
 
     @GET("/api/messages?sort=createdDate,desc")

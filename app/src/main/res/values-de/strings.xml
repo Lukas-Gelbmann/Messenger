@@ -7,8 +7,17 @@
     <string name="last_name">Nachname</string>
     <string name="e_mail">E-Mail</string>
     <string name="create_user">Nutzer erstellen</string>
-    <string name="type_message_here">"Nachricht eingeben ... "</string>
-    <string name="send">senden</string>
+    <string name="type_message_here">"Nachricht eingeben … "</string>
+    <string name="send">Senden</string>
     <string name="topic">Thema benennen</string>
     <string name="create_a_new_conversation">Neue Konversation erstellen</string>
+    <string name="user_avatar">Nutzer Avatar</string>
+    <string name="creating_topic_failed">Erstellen des Themas fehlgeschlagen!</string>
+    <string name="new_topic_created">Neues Thema erstellt!</string>
+    <string name="user_creation_failed">Erstellen des Nutzers fehlgeschlagen.</string>
+    <string name="user_created">Nutzer erstellt</string>
+    <string name="creating_user_failed">Erstellen des Nutzers fehlgeschlagen.</string>
+    <string name="create">Erstellen</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="new_message_from">\"Neue Nachricht von \"</string>
 </resources>

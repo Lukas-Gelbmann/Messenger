@@ -62,7 +62,7 @@ class ParticipantFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private fun fetchParticipants() {
         val db =
             context?.let {
-                Room.databaseBuilder(it, AppDatabase::class.java, "Messenger")
+                Room.databaseBuilder(it, AppDatabase::class.java, MainActivity.DATABASE_NAME)
                     .allowMainThreadQueries().build()
             }
 
@@ -94,7 +94,6 @@ class ParticipantFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 participants = db!!.participantDao().participants
                 viewAdapter.setParticipants(participants)
                 swipeRefreshLayout.isRefreshing = false
-                Toast.makeText(context, "fetching data failed", Toast.LENGTH_LONG).show()
             }
         })
     }

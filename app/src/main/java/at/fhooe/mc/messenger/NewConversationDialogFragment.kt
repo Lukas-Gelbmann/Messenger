@@ -34,14 +34,14 @@ class NewConversationDialogFragment : DialogFragment() {
             val mView = inflater.inflate(R.layout.new_conversation_dialog, null)
             val editText = mView?.findViewById<EditText>(R.id.conversation_topic)
             builder.setView(mView)
-                .setPositiveButton("Create", DialogInterface.OnClickListener { dialog, id ->
+                .setPositiveButton(getString(R.string.create), DialogInterface.OnClickListener { _, _ ->
                     if (!editText?.text.isNullOrEmpty())
                         listener.onDialogPositiveClick(this, editText?.text.toString())
                 })
                 .setNegativeButton(
-                    "Cancel"
-                ) { dialog, id ->
-                    getDialog()?.cancel()
+                    getString(R.string.cancel)
+                ) { _, _ ->
+                    dialog?.cancel()
                 }
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")

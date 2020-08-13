@@ -32,6 +32,10 @@ class MessagingViewModel(
         return participant.firstName + " " + participant.lastName
     }
 
+    fun getYou(): String{
+        return "You"
+    }
+
     fun getSenderImageUrl(senderId: String): String =
         messageRepository.getParticipant(senderId).avatar
 

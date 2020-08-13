@@ -8,10 +8,10 @@ class MessagingViewModelFactory(application: Application, conversationID: String
     ViewModelProvider.Factory {
 
     private var mApplication: Application = application
-    private var MconversationID: String = conversationID
-    private var MuiserId: String = userID
+    private var mConversationID: String = conversationID
+    private var mUserID: String = userID
 
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T =
-        MessagingViewModel(mApplication, MconversationID, MuiserId) as T
+        MessagingViewModel(mApplication, mConversationID, mUserID) as T
 }

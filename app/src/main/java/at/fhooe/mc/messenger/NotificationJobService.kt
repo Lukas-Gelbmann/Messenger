@@ -39,7 +39,7 @@ class NotificationJobService : JobService() {
     override fun onStartJob(params: JobParameters?): Boolean {
         Log.d(MainActivity.TAG, "Running service now..")
         db = applicationContext.let {
-            Room.databaseBuilder(it, AppDatabase::class.java, "Messenger")
+            Room.databaseBuilder(it, AppDatabase::class.java, MainActivity.DATABASE_NAME)
                 .allowMainThreadQueries().build()
         }
 
@@ -126,7 +126,7 @@ class NotificationJobService : JobService() {
         )
         val builder: NotificationCompat.Builder? =
             NotificationCompat.Builder(this, PRIMARY_CHANNEL_ID)
-                .setContentTitle("New Message from " + participant!!.firstName + " " + participant.lastName)
+                .setContentTitle(getString(R.string.new_message_from) + participant!!.firstName + " " + participant.lastName)
                 .setContentText(message.content)
                 .setContentIntent(contentPendingIntent)
                 .setSmallIcon(R.drawable.ic_message)
