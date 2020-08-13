@@ -1,28 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
+        <import type="android.view.Gravity" />
+
         <variable
             name="message"
             type="at.fhooe.mc.messenger.model.Message" />
+
+        <variable
+            name="viewModel"
+            type="at.fhooe.mc.messenger.model.MessagingViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/relativeLayout"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp">
+        android:padding="4dp">
 
+        <!-- TODO align message to right if sent by current user
+         why is this not working????
+         android:layout_alignParentRight="@{viewModel.messageSentByCurrentUser(message.senderId)}"
+         (Relative Layout)
+         same error with FrameLayout
+         android:layout_gravity="@{viewModel.messageSentByCurrentUser(message.senderId) ? Gravity.START : Gravity.END}" >
+            -->
 
-        <TextView
-            android:id="@+id/message_text"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/colorAccent"
-            android:gravity="center_vertical"
-            android:padding="8dp"
-            android:text="@{message.content}"
-            android:textSize="16sp" />
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:cardBackgroundColor="@{viewModel.messageSentByCurrentUser(message.senderId) ? @color/bubbleMine : @color/bubbleOther}"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="4dp"
+                app:contentPadding="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Participant Image and Name -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="32dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:contentDescription="@string/user_avatar"
+                            app:imageUrl="@{viewModel.getSenderImageUrl(message.senderId)}" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:padding="8dp"
+                            android:text="@{viewModel.getSenderName(message.senderId), default=Sender_Name}"
+                            android:textSize="12sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:padding="8dp"
+                        android:text="@{message.content, default=Message_Content_Text}"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+    </FrameLayout>
+
 </layout>

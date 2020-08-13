@@ -9,8 +9,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
-import at.fhooe.mc.messenger.model.Conversation
-import at.fhooe.mc.messenger.model.PostConversationService
+import androidx.room.Room
+import at.fhooe.mc.messenger.model.*
 import at.fhooe.mc.messenger.view.ConversationFragment
 import at.fhooe.mc.messenger.view.ParticipantFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -27,8 +27,8 @@ class MainActivity : AppCompatActivity(),
         const val JOB_NOTIFICATION_ID: Int = 1
         private lateinit var mScheduler: JobScheduler
         const val TAG = "Messenger"
-        //const val serverIp = "http://192.168.1.191:8080/"
-        const val serverIp = "http://10.0.0.128:8080/"
+        const val serverIp = "http://192.168.1.191:8080/"
+        //const val serverIp = "http://10.0.0.128:8080/"
     }
 
     private var savedInstanceState: Bundle? = null
@@ -44,6 +44,40 @@ class MainActivity : AppCompatActivity(),
         } else {
             initComponents()
         }
+        // load all participants into db
+        fetchAllParticipants()
+    }
+
+    private fun fetchAllParticipants() {
+        val db =
+            application.let {
+                Room.databaseBuilder(it, AppDatabase::class.java, "Messenger")
+                    .allowMainThreadQueries().build()
+            }
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl(MainActivity.serverIp)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        val participantService: GetParticipantService =
+            retrofit.create(GetParticipantService::class.java)
+        val participantsCall: Call<List<Participant>> = participantService.fetchAllParticipants()
+        participantsCall.enqueue(object : Callback<List<Participant>> {
+            override fun onResponse(
+                call: Call<List<Participant>>,
+                response: Response<List<Participant>>
+            ) {
+                if (response.isSuccessful) {
+                    val participants = response.body()!!
+                    for (participant in participants)
+                        db.participantDao().insert(participant)
+                }
+            }
+
+            override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
+                Toast.makeText(application, "fetching data failed", Toast.LENGTH_LONG).show()
+            }
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -67,8 +101,6 @@ class MainActivity : AppCompatActivity(),
                 .replace(R.id.container, fragment, fragment.javaClass.simpleName)
                 .commit()
         }
-        //val id = this.getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("userId", "0")
-        //this.title = id
 
         val bottomNavigationView = findViewById<View>(R.id.bottom_nav_view) as BottomNavigationView
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
@@ -89,7 +121,7 @@ class MainActivity : AppCompatActivity(),
 
     }
 
-    fun createNewConversation() {
+    fun createNewConversation(view: View) {
         val dialog = NewConversationDialogFragment()
         dialog.show(supportFragmentManager, "NewConversationDialogFragment")
     }

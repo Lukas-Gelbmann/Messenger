@@ -8,6 +8,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.room.Room
+import at.fhooe.mc.messenger.model.AppDatabase
 import at.fhooe.mc.messenger.model.Participant
 import at.fhooe.mc.messenger.model.PostParticipantService
 import retrofit2.Call
@@ -58,6 +60,8 @@ class LoginActivity : AppCompatActivity() {
                     val prefs = applicationContext.getSharedPreferences("PREFERENCE", MODE_PRIVATE)
                     prefs.edit().putBoolean("isFirstRun", false).apply()
                     prefs.edit().putString("userId", response.body()?.id).apply()
+                    saveParticipant(response.body()!!)
+
                     val returnIntent = Intent()
                     setResult(Activity.RESULT_OK, returnIntent)
                     finish()
@@ -76,6 +80,17 @@ class LoginActivity : AppCompatActivity() {
 
             }
         })
+
+    }
+
+    private fun saveParticipant(participant: Participant) {
+        val db =
+            application.let {
+                Room.databaseBuilder(it, AppDatabase::class.java, "Messenger")
+                    .allowMainThreadQueries().build()
+            }
+
+        db.participantDao().insert(participant)
 
     }
 }

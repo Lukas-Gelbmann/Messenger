@@ -5,11 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import at.fhooe.mc.messenger.databinding.MessageItemBinding
 import at.fhooe.mc.messenger.model.Message
+import at.fhooe.mc.messenger.model.MessagingViewModel
 import at.fhooe.mc.messenger.view.MessageAdapter.ViewHolder
 
 class MessageAdapter : RecyclerView.Adapter<ViewHolder>() {
 
     private var messages: List<Message> = listOf()
+    var viewModel : MessagingViewModel? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -31,6 +33,7 @@ class MessageAdapter : RecyclerView.Adapter<ViewHolder>() {
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Message) {
             binding.message = item
+            binding.viewModel = viewModel
             binding.executePendingBindings()
         }
     }

@@ -3,7 +3,6 @@ package at.fhooe.mc.messenger.view
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -48,11 +47,10 @@ class MessagingActivity : AppCompatActivity() {
         }
 
         userId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("userId", "0")!!
-        conversation = intent.getParcelableExtra<Conversation>("CONVERSATION_ID")
+        conversation = intent.getParcelableExtra<Conversation>("CONVERSATION_ID")!!
         title = conversation.topic
-        Toast.makeText(this, "conversation id: ${conversation.id}", Toast.LENGTH_SHORT).show()
 
-        val model: MessagingViewModel by viewModels() {
+        val model: MessagingViewModel by viewModels {
             MessagingViewModelFactory(
                 application,
                 conversation.id,
@@ -62,6 +60,7 @@ class MessagingActivity : AppCompatActivity() {
 
         model.messages.observe(this, Observer<List<Message>> { messages ->
             viewAdapter.setMessages(messages)
+            viewAdapter.viewModel = mModel
         })
         mModel = model
     }

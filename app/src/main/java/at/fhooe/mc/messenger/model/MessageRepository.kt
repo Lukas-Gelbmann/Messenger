@@ -2,6 +2,7 @@ package at.fhooe.mc.messenger.model
 
 import android.app.Application
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
@@ -17,6 +18,11 @@ class MessageRepository(private val application: Application) {
 
     private val messages: MutableLiveData<List<Message>> = MutableLiveData<List<Message>>()
 
+    private val retrofit = Retrofit.Builder()
+        .baseUrl(MainActivity.serverIp)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
     fun getMessages(conversationId: String): LiveData<List<Message>> {
         fetchMessages(conversationId)
         return messages
@@ -29,10 +35,6 @@ class MessageRepository(private val application: Application) {
                     .allowMainThreadQueries().build()
             }
 
-        val retrofit = Retrofit.Builder()
-            .baseUrl(MainActivity.serverIp)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
 
         val messageService = retrofit.create(GetMessageService::class.java)
 
@@ -62,16 +64,7 @@ class MessageRepository(private val application: Application) {
 
 
     fun sendMessage(content: String, conversationId: String, userId: String) {
-        var service: PostMessageService? = null
-        try {
-            val retrofit = Retrofit.Builder()
-                .baseUrl(MainActivity.serverIp)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-            service = retrofit.create(PostMessageService::class.java)
-        } catch (e: Exception) {
-            Log.e(MainActivity.TAG, e.toString())
-        }
+        val service: PostMessageService = retrofit.create(PostMessageService::class.java)
 
         val message = Message(content, conversationId, userId, "1") // TODO receiverId???
 
@@ -94,5 +87,15 @@ class MessageRepository(private val application: Application) {
         })
     }
 
+    // get participant from db
+    fun getParticipant(id: String): Participant {
+        val db =
+            application.let {
+                Room.databaseBuilder(it, AppDatabase::class.java, "Messenger")
+                    .allowMainThreadQueries().build()
+            }
+
+        return db.participantDao().getParticipant(id)
+    }
 
 }
