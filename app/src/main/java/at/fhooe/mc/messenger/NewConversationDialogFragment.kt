@@ -5,8 +5,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
 import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 
@@ -30,7 +28,6 @@ class NewConversationDialogFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val editText = view?.findViewById<EditText>(R.id.conversation_topic)
         return activity?.let {
             val builder = AlertDialog.Builder(it)
             val inflater = requireActivity().layoutInflater;
@@ -38,7 +35,8 @@ class NewConversationDialogFragment : DialogFragment() {
             val editText = mView?.findViewById<EditText>(R.id.conversation_topic)
             builder.setView(mView)
                 .setPositiveButton("Create", DialogInterface.OnClickListener { dialog, id ->
-                    listener.onDialogPositiveClick(this, editText?.text.toString())
+                    if (!editText?.text.isNullOrEmpty())
+                        listener.onDialogPositiveClick(this, editText?.text.toString())
                 })
                 .setNegativeButton(
                     "Cancel"

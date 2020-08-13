@@ -57,7 +57,7 @@ class NotificationJobService : JobService() {
     private fun checkForNewMessages() {
         val messageService = retrofit.create(GetMessageService::class.java)
         val messagesCall: Call<Int> =
-            messageService.getMessageCountForParticipant("1") // TODO receiverId???
+            messageService.getMessageCountForParticipant(MainActivity.PARTICIPANT_ID)
         messagesCall.enqueue(object : Callback<Int> {
 
             override fun onResponse(call: Call<Int>, response: Response<Int>) {
@@ -79,7 +79,7 @@ class NotificationJobService : JobService() {
     private fun getNewMessages() {
         val messageService = retrofit.create(GetMessageService::class.java)
         val messagesCall: Call<List<Message>> =
-            messageService.getNewestMessagesForParticipant("1") // TODO receiverId???
+            messageService.getNewestMessagesForParticipant(MainActivity.PARTICIPANT_ID)
         messagesCall.enqueue(object : Callback<List<Message>> {
 
             override fun onResponse(call: Call<List<Message>>, response: Response<List<Message>>) {

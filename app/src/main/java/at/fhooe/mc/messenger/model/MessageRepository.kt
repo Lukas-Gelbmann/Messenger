@@ -66,7 +66,7 @@ class MessageRepository(private val application: Application) {
     fun sendMessage(content: String, conversationId: String, userId: String) {
         val service: PostMessageService = retrofit.create(PostMessageService::class.java)
 
-        val message = Message(content, conversationId, userId, "1") // TODO receiverId???
+        val message = Message(content, conversationId, userId, MainActivity.PARTICIPANT_ID)
 
         val call: Call<Message> = service!!.createMessage(message)
         call.enqueue(object : Callback<Message> {

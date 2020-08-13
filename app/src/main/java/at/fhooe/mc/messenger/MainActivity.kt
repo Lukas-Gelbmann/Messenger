@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity(),
         const val JOB_NOTIFICATION_ID: Int = 1
         private lateinit var mScheduler: JobScheduler
         const val TAG = "Messenger"
+        const val PARTICIPANT_ID = "1"
         const val serverIp = "http://192.168.1.191:8080/"
         //const val serverIp = "http://10.0.0.128:8080/"
     }
