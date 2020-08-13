@@ -19,6 +19,9 @@ public interface MessageDao {
     @Query("SELECT * FROM message WHERE id = :id")
     Message getMessage(String id);
 
+    @Query("SELECT count(*) FROM message WHERE receiverId = :receiverId")
+    Integer getMessageCount(String receiverId);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(Message... messages);
 

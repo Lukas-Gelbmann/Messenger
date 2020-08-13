@@ -19,5 +19,5 @@ public interface GetParticipantService {
 
 
     @GET("/api/participants/{id}")
-    Call<List<Conversation>> getParticipant(@Path("id") String id);
+    Call<Participant> getParticipant(@Path("id") String id);
 }

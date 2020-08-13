@@ -1,13 +1,14 @@
 package at.fhooe.mc.messenger
 
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
-import androidx.room.Room
-import at.fhooe.mc.messenger.model.AppDatabase
 import at.fhooe.mc.messenger.model.Conversation
 import at.fhooe.mc.messenger.model.PostConversationService
 import at.fhooe.mc.messenger.view.ConversationFragment
@@ -23,9 +24,11 @@ class MainActivity : AppCompatActivity(),
     NewConversationDialogFragment.NewConversationDialogListener {
 
     companion object {
+        const val JOB_NOTIFICATION_ID: Int = 1
+        private lateinit var mScheduler: JobScheduler
         const val TAG = "Messenger"
-        const val serverIp = "http://192.168.1.191:8080/"
-        //const val serverIp = "http://10.0.0.29:8080/"
+        //const val serverIp = "http://192.168.1.191:8080/"
+        const val serverIp = "http://10.0.0.128:8080/"
     }
 
     private var savedInstanceState: Bundle? = null
@@ -50,6 +53,11 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun initComponents() {
+        mScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
+        val serviceName = ComponentName(packageName, NotificationJobService::class.java.name)
+        val builder = JobInfo.Builder(JOB_NOTIFICATION_ID, serviceName).setMinimumLatency(10000)
+        val myJobInfo = builder.build()
+        mScheduler.schedule(myJobInfo)
 
 
 
@@ -81,7 +89,7 @@ class MainActivity : AppCompatActivity(),
 
     }
 
-    fun createNewConversation(view: View) {
+    fun createNewConversation() {
         val dialog = NewConversationDialogFragment()
         dialog.show(supportFragmentManager, "NewConversationDialogFragment")
     }

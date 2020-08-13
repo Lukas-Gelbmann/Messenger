@@ -18,6 +18,6 @@ public interface GetConversationService {
     Call<List<Conversation>> fetchAllConversations();
 
     @GET("/api/conversations/{id}")
-    Call<List<Conversation>> getConversation(@Path("id") String id);
+    Call<Conversation> getConversation(@Path("id") String id);
 }
 
