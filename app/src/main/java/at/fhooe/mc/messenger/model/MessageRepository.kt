@@ -26,7 +26,13 @@ class MessageRepository(private val application: Application) {
     }
 
     private fun fetchAllMessages(conversationId: String) {
-        val db = application.let { Room.databaseBuilder(it, AppDatabase::class.java, MainActivity.DATABASE_NAME).allowMainThreadQueries().build() }
+        val db = application.let {
+            Room.databaseBuilder(
+                it,
+                AppDatabase::class.java,
+                MainActivity.DATABASE_NAME
+            ).allowMainThreadQueries().build()
+        }
         var count: Int
         val service: GetParticipantService = retrofit.create(GetParticipantService::class.java)
         val countCall: Call<Int> = service.fetchParticipantCount()
@@ -49,23 +55,32 @@ class MessageRepository(private val application: Application) {
     }
 
     private fun fetchAllMessagesPages(i: Int, conversationId: String) {
-        val db = application.let { Room.databaseBuilder(it, AppDatabase::class.java, MainActivity.DATABASE_NAME).allowMainThreadQueries().build() }
+        val db = application.let {
+            Room.databaseBuilder(
+                it,
+                AppDatabase::class.java,
+                MainActivity.DATABASE_NAME
+            ).allowMainThreadQueries().build()
+        }
         val service: GetMessageService = retrofit.create(GetMessageService::class.java)
         for (page in 0..i) {
             val call: Call<List<Message>> = service.getMessagesForConversation(conversationId, page)
             call.enqueue(object : Callback<List<Message>> {
-                override fun onResponse(call: Call<List<Message>>, response: Response<List<Message>>) {
+                override fun onResponse(
+                    call: Call<List<Message>>,
+                    response: Response<List<Message>>
+                ) {
                     if (response.isSuccessful) {
                         val list = response.body()!!
                         for (entry in list)
                             db.messageDao().insert(entry)
                     }
-                    if(page == i)
+                    if (page == i)
                         messages.value = db.messageDao().getMessages(conversationId)
                 }
 
                 override fun onFailure(call: Call<List<Message>>, t: Throwable) {
-                    if(page == i) {
+                    if (page == i) {
                         Log.e(MainActivity.TAG, "fetching data failed")
                         messages.value = db.messageDao().getMessages(conversationId)
                     }
@@ -74,7 +89,8 @@ class MessageRepository(private val application: Application) {
         }
     }
 
-    fun sendMessage(content: String, conversationId: String, userId: String) {
+    fun sendMessage(content: String, conversationId: String, userId: String): Boolean {
+        var success = false
         val service: PostMessageService = retrofit.create(PostMessageService::class.java)
 
         val message = Message(content, conversationId, userId, MainActivity.PARTICIPANT_ID)
@@ -87,15 +103,25 @@ class MessageRepository(private val application: Application) {
             ) {
                 if (response.isSuccessful) {
                     messages.postValue(getMessages(conversationId).value)
+                    success = true
                 } else {
-                    Toast.makeText(application.applicationContext,application.applicationContext.getString(R.string.sending_message_failed), Toast.LENGTH_LONG ).show()
+                    Toast.makeText(
+                        application.applicationContext,
+                        application.applicationContext.getString(R.string.sending_message_failed),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
 
             override fun onFailure(call: Call<Message?>, t: Throwable) {
-                Toast.makeText(application.applicationContext,application.applicationContext.getString(R.string.sending_message_failed), Toast.LENGTH_LONG ).show()
+                Toast.makeText(
+                    application.applicationContext,
+                    application.applicationContext.getString(R.string.sending_message_failed),
+                    Toast.LENGTH_LONG
+                ).show()
             }
         })
+        return success
     }
 
     fun getParticipant(id: String): Participant {
