@@ -3,7 +3,6 @@ package at.fhooe.mc.messenger
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -41,11 +40,12 @@ class LoginActivity : AppCompatActivity() {
                 Room.databaseBuilder(it, AppDatabase::class.java, MainActivity.DATABASE_NAME)
                     .allowMainThreadQueries().build()
             }
-        fetchData()
+
+        fetchAllMessages()
     }
 
     fun onClick(view: View) {
-        val participant = Participant(
+        val newParticipant = Participant(
             mFirstNameEditText?.text.toString(),
             mLastNameEditText?.text.toString(),
             mEmailEditText?.text.toString()
@@ -60,7 +60,7 @@ class LoginActivity : AppCompatActivity() {
             ).show()
         else {
             val service = retrofit.create(PostParticipantService::class.java)
-            val call: Call<Participant> = service.sendParticipant(participant)
+            val call: Call<Participant> = service.sendParticipant(newParticipant)
             call.enqueue(object : Callback<Participant?> {
                 override fun onResponse(
                     call: Call<Participant?>?,
@@ -71,7 +71,7 @@ class LoginActivity : AppCompatActivity() {
                             applicationContext.getSharedPreferences("PREFERENCE", MODE_PRIVATE)
                         prefs.edit().putBoolean("isFirstRun", false).apply()
                         prefs.edit().putString("userId", response.body()?.id).apply()
-                        saveParticipant(response.body()!!)
+                        db.participantDao().insert(response.body())
                         Toast.makeText(
                             applicationContext,
                             getString(R.string.user_created),
@@ -97,36 +97,47 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun fetchData() {
+    private fun fetchAllMessages() {
+        var count: Int
+        val service: GetParticipantService = retrofit.create(GetParticipantService::class.java)
+        val countCall: Call<Int> = service.fetchParticipantCount()
+        countCall.enqueue(object : Callback<Int> {
+            override fun onResponse(call: Call<Int>, response: Response<Int>) {
+                if (response.isSuccessful) {
+                    count = response.body()!!
+                    fetchAllMessagesPages(count/30)
+                }
+            }
+
+            override fun onFailure(call: Call<Int>, t: Throwable) {
+            }
+        })
+    }
+
+    private fun fetchAllMessagesPages(i: Int) {
         val db =
             application.let {
                 Room.databaseBuilder(it, AppDatabase::class.java, MainActivity.DATABASE_NAME)
                     .allowMainThreadQueries().build()
             }
-
-        val messageService = retrofit.create(GetMessageService::class.java)
-
-        val messagesCall: Call<List<Message>> =
-            messageService.getMessagesForParticipant(MainActivity.PARTICIPANT_ID)
-        messagesCall.enqueue(object : Callback<List<Message>> {
-            override fun onResponse(call: Call<List<Message>>, response: Response<List<Message>>) {
-                if (response.isSuccessful) {
-                    var messages = response.body()!!
-                    for (message in messages)
-                        db.messageDao().insert(message)
-                    isFetchDataFinished = true
-                } else {
-                    Log.e(MainActivity.TAG, "fetching data failed")
+        val service: GetMessageService = retrofit.create(GetMessageService::class.java)
+        for (page in 0..i) {
+            val call: Call<List<Message>> = service.getMessagesForParticipant(MainActivity.PARTICIPANT_ID,page)
+            call.enqueue(object : Callback<List<Message>> {
+                override fun onResponse(call: Call<List<Message>>, response: Response<List<Message>>) {
+                    if (response.isSuccessful) {
+                        val list = response.body()!!
+                        for (entry in list)
+                            db.messageDao().insert(entry)
+                    }
+                    if(page == i)
+                        isFetchDataFinished = true
                 }
-            }
 
-            override fun onFailure(call: Call<List<Message>>, t: Throwable) {
-                Log.e(MainActivity.TAG, "fetching data failed")
-            }
-        })
+                override fun onFailure(call: Call<List<Message>>, t: Throwable) {
+                }
+            })
+        }
     }
 
-    private fun saveParticipant(participant: Participant) {
-        db.participantDao().insert(participant)
-    }
 }

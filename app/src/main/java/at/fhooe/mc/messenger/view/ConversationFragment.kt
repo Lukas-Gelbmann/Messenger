@@ -33,7 +33,7 @@ class ConversationFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private lateinit var viewManager: RecyclerView.LayoutManager
     lateinit var conversations: List<Conversation>
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
-
+    private val retrofit = Retrofit.Builder().baseUrl(MainActivity.serverIp).addConverterFactory(GsonConverterFactory.create()).build()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,52 +63,66 @@ class ConversationFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             layoutManager = viewManager
             adapter = viewAdapter
         }
-        fetchConversations()
+        fetchAllConversations()
     }
 
 
     override fun onRefresh() {
-        fetchConversations()
+        fetchAllConversations()
     }
 
-    private fun fetchConversations() {
-        val db =
-            context?.let {
-                Room.databaseBuilder(it, AppDatabase::class.java, MainActivity.DATABASE_NAME)
-                    .allowMainThreadQueries().build()
-            }
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(MainActivity.serverIp)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        val conversationService: GetConversationService =
-            retrofit.create(GetConversationService::class.java)
-        val conversationsCall: Call<List<Conversation>> =
-            conversationService.fetchAllConversations()
-        conversationsCall.enqueue(object : Callback<List<Conversation>> {
-            override fun onResponse(
-                call: Call<List<Conversation>>,
-                response: Response<List<Conversation>>
-            ) {
-                if (!response.isSuccessful) {
-                    conversations = db!!.conversationDao().conversations
-                } else {
-                    conversations = response.body()!!
-                    for (conversation in conversations)
-                        db!!.conversationDao().insert(conversation)
+    private fun fetchAllConversations() {
+        var conversationCount: Int
+        val conversationService: GetConversationService = retrofit.create(GetConversationService::class.java)
+        val conversationsCountCall: Call<Int> = conversationService.fetchConversationCount()
+        conversationsCountCall.enqueue(object : Callback<Int> {
+            override fun onResponse(call: Call<Int>, response: Response<Int>) {
+                if (response.isSuccessful) {
+                    conversationCount = response.body()!!
+                    fetchAllConversationsPages(conversationCount/30)
                 }
-                viewAdapter.setConversations(conversations)
-                swipeRefreshLayout.isRefreshing = false
             }
 
-            override fun onFailure(call: Call<List<Conversation>>, t: Throwable) {
-                conversations = db!!.conversationDao().conversations
-                viewAdapter.setConversations(conversations)
-                swipeRefreshLayout.isRefreshing = false
+            override fun onFailure(call: Call<Int>, t: Throwable) {
             }
         })
     }
+
+    private fun fetchAllConversationsPages(i: Int) {
+        val db = context?.let {
+            Room.databaseBuilder(it, AppDatabase::class.java, MainActivity.DATABASE_NAME)
+                .allowMainThreadQueries().build()
+        }
+        val conversationService: GetConversationService = retrofit.create(GetConversationService::class.java)
+        for (page in 0..i) {
+            val conversationsCall: Call<List<Conversation>> = conversationService.fetchAllConversations(page)
+            conversationsCall.enqueue(object : Callback<List<Conversation>> {
+                override fun onResponse(call: Call<List<Conversation>>, response: Response<List<Conversation>>) {
+                    if (response.isSuccessful) {
+                        val conversations = response.body()!!
+                        for (conversation in conversations)
+                            db?.conversationDao()?.insert(conversation)
+                    }
+                    if (page == i)
+                        conversations = db!!.conversationDao().conversations
+                        viewAdapter.setConversations(conversations)
+                        swipeRefreshLayout.isRefreshing = false
+                }
+
+                override fun onFailure(call: Call<List<Conversation>>, t: Throwable) {
+                    if (page == i) {
+                        conversations = db!!.conversationDao().conversations
+                        viewAdapter.setConversations(conversations)
+                        swipeRefreshLayout.isRefreshing = false
+                    }
+                }
+            })
+        }
+    }
+
+
+
+
 
 
     private fun openConversation(conversation: Conversation) {

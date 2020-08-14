@@ -2,7 +2,6 @@ package at.fhooe.mc.messenger.model
 
 import android.app.Application
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
@@ -24,44 +23,52 @@ class MessageRepository(private val application: Application) {
         .build()
 
     fun getMessages(conversationId: String): LiveData<List<Message>> {
-        fetchMessages(conversationId)
+        fetchAllMessages(conversationId)
         return messages
     }
 
-    private fun fetchMessages(conversationId: String) {
-        val db =
-            application.let {
-                Room.databaseBuilder(it, AppDatabase::class.java, MainActivity.DATABASE_NAME)
-                    .allowMainThreadQueries().build()
-            }
-
-
-        val messageService = retrofit.create(GetMessageService::class.java)
-
-        val messagesCall: Call<List<Message>> =
-            messageService.getMessagesForConversation(conversationId)
-        messagesCall.enqueue(object : Callback<List<Message>> {
-            override fun onResponse(
-                call: Call<List<Message>>,
-                response: Response<List<Message>>
-            ) {
+    private fun fetchAllMessages(conversationId: String) {
+        var count: Int
+        val service: GetParticipantService = retrofit.create(GetParticipantService::class.java)
+        val countCall: Call<Int> = service.fetchParticipantCount()
+        countCall.enqueue(object : Callback<Int> {
+            override fun onResponse(call: Call<Int>, response: Response<Int>) {
                 if (response.isSuccessful) {
-                    messages.value = response.body()!!
-                    for (mess in messages.value!!)
-                        db.messageDao().insert(mess)
-                } else {
-                    messages.value = db.messageDao().getMessages(conversationId)
+                    count = response.body()!!
+                    fetchAllMessagesPages(count / 30, conversationId)
                 }
-
             }
 
-            override fun onFailure(call: Call<List<Message>>, t: Throwable) {
-                Log.e(MainActivity.TAG, "fetching data failed")
-                messages.value = db.messageDao().getMessages(conversationId)
+            override fun onFailure(call: Call<Int>, t: Throwable) {
             }
         })
     }
 
+    private fun fetchAllMessagesPages(i: Int, conversationId: String) {
+        val db = application.let { Room.databaseBuilder(it, AppDatabase::class.java, MainActivity.DATABASE_NAME).allowMainThreadQueries().build() }
+        val service: GetMessageService = retrofit.create(GetMessageService::class.java)
+        for (page in 0..i) {
+            val call: Call<List<Message>> = service.getMessagesForConversation(conversationId, page)
+            call.enqueue(object : Callback<List<Message>> {
+                override fun onResponse(call: Call<List<Message>>, response: Response<List<Message>>) {
+                    if (response.isSuccessful) {
+                        val list = response.body()!!
+                        for (entry in list)
+                            db.messageDao().insert(entry)
+                    }
+                    if(page == i)
+                        messages.value = db.messageDao().getMessages(conversationId)
+                }
+
+                override fun onFailure(call: Call<List<Message>>, t: Throwable) {
+                    if(page == i) {
+                        Log.e(MainActivity.TAG, "fetching data failed")
+                        messages.value = db.messageDao().getMessages(conversationId)
+                    }
+                }
+            })
+        }
+    }
 
     fun sendMessage(content: String, conversationId: String, userId: String) {
         val service: PostMessageService = retrofit.create(PostMessageService::class.java)
@@ -81,7 +88,6 @@ class MessageRepository(private val application: Application) {
             }
 
             override fun onFailure(call: Call<Message?>, t: Throwable) {
-
                 Log.e(MainActivity.TAG, "sending data failed")
             }
         })

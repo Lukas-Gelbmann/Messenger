@@ -29,6 +29,7 @@ class ParticipantFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private lateinit var viewManager: RecyclerView.LayoutManager
     lateinit var participants: List<Participant>
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private val retrofit = Retrofit.Builder().baseUrl(MainActivity.serverIp).addConverterFactory(GsonConverterFactory.create()).build()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,49 +53,60 @@ class ParticipantFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             layoutManager = viewManager
             adapter = viewAdapter
         }
-        fetchParticipants()
+        fetchAllParticipants()
     }
 
     override fun onRefresh() {
-        fetchParticipants()
+        fetchAllParticipants()
     }
 
-    private fun fetchParticipants() {
-        val db =
-            context?.let {
+    private fun fetchAllParticipants() {
+        var participantCount: Int
+        val participantService: GetParticipantService = retrofit.create(GetParticipantService::class.java)
+        val participantsCountCall: Call<Int> = participantService.fetchParticipantCount()
+        participantsCountCall.enqueue(object : Callback<Int> {
+            override fun onResponse(call: Call<Int>, response: Response<Int>) {
+                if (response.isSuccessful) {
+                    participantCount = response.body()!!
+                    fetchAllParticipantsPages(participantCount/30)
+                }
+            }
+
+            override fun onFailure(call: Call<Int>, t: Throwable) {
+            }
+        })
+    }
+
+    private fun fetchAllParticipantsPages(i: Int) {
+        val db = context?.let {
                 Room.databaseBuilder(it, AppDatabase::class.java, MainActivity.DATABASE_NAME)
                     .allowMainThreadQueries().build()
             }
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(MainActivity.serverIp)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        val participantService: GetParticipantService =
-            retrofit.create(GetParticipantService::class.java)
-        val participantsCall: Call<List<Participant>> = participantService.fetchAllParticipants()
-        participantsCall.enqueue(object : Callback<List<Participant>> {
-            override fun onResponse(
-                call: Call<List<Participant>>,
-                response: Response<List<Participant>>
-            ) {
-                if (!response.isSuccessful) {
-                    participants = db!!.participantDao().participants
-                } else {
-                    participants = response.body()!!
-                    for (participant in participants)
-                        db!!.participantDao().insert(participant)
+        val participantService: GetParticipantService = retrofit.create(GetParticipantService::class.java)
+        for (page in 0..i) {
+            val participantsCall: Call<List<Participant>> = participantService.fetchAllParticipants(page)
+            participantsCall.enqueue(object : Callback<List<Participant>> {
+                override fun onResponse(call: Call<List<Participant>>, response: Response<List<Participant>>) {
+                    if (response.isSuccessful) {
+                        val participants = response.body()!!
+                        for (participant in participants)
+                            db?.participantDao()?.insert(participant)
+                    }
+                    if (page == i) {
+                        participants = db!!.participantDao().participants
+                        viewAdapter.setParticipants(participants)
+                        swipeRefreshLayout.isRefreshing = false
+                    }
                 }
-                viewAdapter.setParticipants(participants)
-                swipeRefreshLayout.isRefreshing = false
 
-            }
-
-            override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
-                participants = db!!.participantDao().participants
-                viewAdapter.setParticipants(participants)
-                swipeRefreshLayout.isRefreshing = false
-            }
-        })
+                override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
+                    if (page == i) {
+                        participants = db!!.participantDao().participants
+                        viewAdapter.setParticipants(participants)
+                        swipeRefreshLayout.isRefreshing = false
+                    }
+                }
+            })
+        }
     }
 }

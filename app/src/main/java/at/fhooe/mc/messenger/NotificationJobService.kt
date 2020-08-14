@@ -65,9 +65,10 @@ class NotificationJobService : JobService() {
                     return
                 val serverCount = response.body()!!
                 val localCount = db!!.messageDao().getMessageCount("1")
-                Log.i(MainActivity.TAG, "message count: " + response.body()!!.toString())
-                if (serverCount > localCount)
-                    getNewMessages()
+                if (serverCount > localCount) {
+                    Log.i("xdd", "message difference: " + (serverCount - localCount))
+                    getNewMessages(serverCount - localCount)
+                }
             }
 
             override fun onFailure(call: Call<Int>, t: Throwable) {
@@ -76,16 +77,17 @@ class NotificationJobService : JobService() {
         })
     }
 
-    private fun getNewMessages() {
+    private fun getNewMessages(i: Int) {
         val messageService = retrofit.create(GetMessageService::class.java)
         val messagesCall: Call<List<Message>> =
-            messageService.getNewestMessagesForParticipant(MainActivity.PARTICIPANT_ID)
+            messageService.getNewestMessagesForParticipant(MainActivity.PARTICIPANT_ID, i+10)
         messagesCall.enqueue(object : Callback<List<Message>> {
 
             override fun onResponse(call: Call<List<Message>>, response: Response<List<Message>>) {
                 if (!response.isSuccessful)
                     return
                 val newServerMessages = response.body()!!
+                Log.i("xdd", "new message count received: " + newServerMessages.size)
                 for(message in newServerMessages)
                     db!!.messageDao().insert(message)
                 getParticipant(newServerMessages[0])

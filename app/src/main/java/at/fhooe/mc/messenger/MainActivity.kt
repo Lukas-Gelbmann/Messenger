@@ -20,8 +20,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MainActivity : AppCompatActivity(),
-    NewConversationDialogFragment.NewConversationDialogListener {
+class MainActivity : AppCompatActivity(), NewConversationDialogFragment.NewConversationDialogListener {
 
     companion object {
         const val JOB_NOTIFICATION_ID: Int = 1
@@ -33,6 +32,7 @@ class MainActivity : AppCompatActivity(),
         const val serverIp = "http://10.0.0.128:8080/"
     }
 
+    private val retrofit = Retrofit.Builder().baseUrl(serverIp).addConverterFactory(GsonConverterFactory.create()).build()
     private var savedInstanceState: Bundle? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,35 +51,44 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun fetchAllParticipants() {
+        var participantCount: Int
+        val participantService: GetParticipantService = retrofit.create(GetParticipantService::class.java)
+        val participantsCountCall: Call<Int> = participantService.fetchParticipantCount()
+        participantsCountCall.enqueue(object : Callback<Int> {
+            override fun onResponse(call: Call<Int>, response: Response<Int>) {
+                if (response.isSuccessful) {
+                    participantCount = response.body()!!
+                    fetchAllParticipantsPages(participantCount/30)
+                }
+            }
+
+            override fun onFailure(call: Call<Int>, t: Throwable) {
+            }
+        })
+    }
+
+    private fun fetchAllParticipantsPages(i: Int) {
         val db =
             application.let {
                 Room.databaseBuilder(it, AppDatabase::class.java, DATABASE_NAME)
                     .allowMainThreadQueries().build()
             }
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(MainActivity.serverIp)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        val participantService: GetParticipantService =
-            retrofit.create(GetParticipantService::class.java)
-        val participantsCall: Call<List<Participant>> = participantService.fetchAllParticipants()
-        participantsCall.enqueue(object : Callback<List<Participant>> {
-            override fun onResponse(
-                call: Call<List<Participant>>,
-                response: Response<List<Participant>>
-            ) {
-                if (response.isSuccessful) {
-                    val participants = response.body()!!
-                    for (participant in participants)
-                        db.participantDao().insert(participant)
+        val participantService: GetParticipantService = retrofit.create(GetParticipantService::class.java)
+        for (page in 0..i) {
+            val participantsCall: Call<List<Participant>> = participantService.fetchAllParticipants(page)
+            participantsCall.enqueue(object : Callback<List<Participant>> {
+                override fun onResponse(call: Call<List<Participant>>, response: Response<List<Participant>>) {
+                    if (response.isSuccessful) {
+                        val participants = response.body()!!
+                        for (participant in participants)
+                            db.participantDao().insert(participant)
+                    }
                 }
-            }
 
-            override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
-                Toast.makeText(application, "fetching data failed", Toast.LENGTH_LONG).show()
-            }
-        })
+                override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
+                }
+            })
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -128,19 +137,8 @@ class MainActivity : AppCompatActivity(),
         dialog.show(supportFragmentManager, "NewConversationDialogFragment")
     }
 
-
     override fun onDialogPositiveClick(dialog: DialogFragment, topic: String) {
-        var service: PostConversationService? = null
-        try {
-            val retrofit = Retrofit.Builder()
-                .baseUrl(serverIp)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-            service = retrofit.create(PostConversationService::class.java)
-        } catch (e: Exception) {
-            Toast.makeText(applicationContext, e.toString(), Toast.LENGTH_LONG).show()
-        }
-
+        var service =  retrofit.create(PostConversationService::class.java)
         val conversation = Conversation(topic)
         val call: Call<Conversation> = service!!.sendConversation(conversation)
         call.enqueue(object : Callback<Conversation?> {
