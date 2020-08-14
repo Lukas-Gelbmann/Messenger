@@ -80,6 +80,7 @@ class MessageRepository(private val application: Application) {
 
     fun sendMessage(content: String, conversationId: String, userId: String): Boolean {
         var success = false
+        val db = AppDatabase.getDatabase(application)
         val service: PostMessageService = retrofit.create(
             PostMessageService::class.java)
 
@@ -98,6 +99,7 @@ class MessageRepository(private val application: Application) {
             ) {
                 if (response.isSuccessful) {
                     messages.postValue(getMessages(conversationId).value)
+                    db.messageDao().insert(response.body()!!)
                     success = true
                 } else {
                     Toast.makeText(
