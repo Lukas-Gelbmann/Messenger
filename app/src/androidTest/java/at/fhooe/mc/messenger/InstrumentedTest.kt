@@ -61,6 +61,6 @@ class InstrumentedTest {
         val message = "This is a text message."
         onView(withId(R.id.edit_text_message)).perform(typeText(message))
         onView(withId(R.id.button_send_message)).perform(click())
-        onView(withId(R.id.edit_text_message)).check(matches(withText(message))) // message was not sent => message still in text field
+        onView(withId(R.id.edit_text_message)).check(matches(withText("")))
     }
 }
