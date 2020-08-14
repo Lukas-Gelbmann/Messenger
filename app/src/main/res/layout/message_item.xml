@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
-        <import type="android.view.Gravity" />
-
         <variable
             name="message"
             type="at.fhooe.mc.messenger.model.Message" />
@@ -19,19 +17,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="4dp">
-        <!-- TODO align message to right if sent by current user
-         why is this not working????
-         android:layout_alignParentRight="@{viewModel.messageSentByCurrentUser(message.senderId)}"
-         (Relative Layout)
-         same error with FrameLayout
-         android:layout_gravity="@{viewModel.messageSentByCurrentUser(message.senderId) ? Gravity.START : Gravity.END}" >
-            -->
 
             <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
-                app:cardBackgroundColor="@{viewModel.messageSentByCurrentUser(message.senderId) ? @color/bubbleMine : @color/bubbleOther}"
+                app:cardBackgroundColor="@{viewModel.messageSentByCurrentUser(message.senderId) ? @color/bubbleMine : @color/bubbleOther, default=@color/bubbleOther}"
                 app:cardCornerRadius="24dp"
                 app:cardElevation="4dp"
                 app:contentPadding="4dp"
@@ -60,9 +51,10 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:gravity="center_vertical"
+                            android:gravity="start"
                             android:padding="8dp"
-                            android:text="@{viewModel.messageSentByCurrentUser(message.senderId) ? @string/you : viewModel.getSenderName(message.senderId), default=Sender_Name}"
+                            android:text="@{viewModel.messageSentByCurrentUser(message.senderId) ? @string/you : viewModel.getSenderName(message.senderId)}"
+                            tools:text="Sender Name"
                             android:textSize="12sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent" />
@@ -74,7 +66,8 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:padding="8dp"
-                        android:text="@{message.content, default=Message_Content_Text}"
+                        android:text="@{message.content}"
+                        tools:text="Message Content Text"
                         android:textSize="16sp" />
 
                 </LinearLayout>
