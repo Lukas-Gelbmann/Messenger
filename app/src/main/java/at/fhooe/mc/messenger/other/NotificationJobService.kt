@@ -1,4 +1,4 @@
-package at.fhooe.mc.messenger
+package at.fhooe.mc.messenger.other
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -14,7 +14,9 @@ import android.graphics.Color
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.room.Room
+import at.fhooe.mc.messenger.R
 import at.fhooe.mc.messenger.model.*
+import at.fhooe.mc.messenger.view.MainActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -44,13 +46,9 @@ class NotificationJobService : JobService() {
         }
 
         createNotificationChannel()
-
         checkForNewMessages()
-
         scheduleRefresh()
-
         jobFinished(params, false)
-
         return true
     }
 
@@ -127,7 +125,9 @@ class NotificationJobService : JobService() {
             PendingIntent.FLAG_UPDATE_CURRENT
         )
         val builder: NotificationCompat.Builder? =
-            NotificationCompat.Builder(this, PRIMARY_CHANNEL_ID)
+            NotificationCompat.Builder(this,
+                PRIMARY_CHANNEL_ID
+            )
                 .setContentTitle(getString(R.string.new_message_from) + participant!!.firstName + " " + participant.lastName)
                 .setContentText(message.content)
                 .setContentIntent(contentPendingIntent)

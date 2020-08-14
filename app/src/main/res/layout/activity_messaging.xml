@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".view.MainActivity">
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -31,14 +31,15 @@
             android:hint="@string/type_message_here"
             android:theme="@style/AppTheme"
             android:inputType="text"
-            android:maxLines="0"/>
+            android:maxLines="0"
+            android:autofillHints="" />
 
         <Button
             android:id="@+id/button_send_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:drawableStart="@drawable/ic_send"
             android:drawableTint="#000"
             android:maxLines="1"

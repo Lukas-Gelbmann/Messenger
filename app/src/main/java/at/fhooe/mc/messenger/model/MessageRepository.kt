@@ -6,24 +6,19 @@ import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
-import at.fhooe.mc.messenger.MainActivity
+import at.fhooe.mc.messenger.view.MainActivity
 import at.fhooe.mc.messenger.R
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import kotlin.coroutines.coroutineContext
 
 class MessageRepository(private val application: Application) {
 
-
     private val messages: MutableLiveData<List<Message>> = MutableLiveData<List<Message>>()
 
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(MainActivity.serverIp)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+    private val retrofit = Retrofit.Builder().baseUrl(MainActivity.serverIp).addConverterFactory(GsonConverterFactory.create()).build()
 
     fun getMessages(conversationId: String): LiveData<List<Message>> {
         fetchAllMessages(conversationId)
@@ -103,14 +98,12 @@ class MessageRepository(private val application: Application) {
         })
     }
 
-    // get participant from db
     fun getParticipant(id: String): Participant {
         val db =
             application.let {
                 Room.databaseBuilder(it, AppDatabase::class.java, MainActivity.DATABASE_NAME)
                     .allowMainThreadQueries().build()
             }
-
         return db.participantDao().getParticipant(id)
     }
 

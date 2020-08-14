@@ -8,9 +8,7 @@ import retrofit2.http.POST;
 public interface PostConversationService {
 
     @Headers({
-
             "Content-type: application/json"
-
     })
     @POST("/api/conversations")
     Call<Conversation> sendConversation(@Body Conversation conversation);

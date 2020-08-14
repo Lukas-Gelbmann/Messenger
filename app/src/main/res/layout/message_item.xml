@@ -12,7 +12,7 @@
 
         <variable
             name="viewModel"
-            type="at.fhooe.mc.messenger.model.MessagingViewModel" />
+            type="at.fhooe.mc.messenger.viewmodel.MessagingViewModel" />
     </data>
 
     <FrameLayout
@@ -62,7 +62,7 @@
                             android:layout_height="match_parent"
                             android:gravity="center_vertical"
                             android:padding="8dp"
-                            android:text="@{viewModel.messageSentByCurrentUser(message.senderId) ? viewModel.getYou() : viewModel.getSenderName(message.senderId), default=Sender_Name}"
+                            android:text="@{viewModel.messageSentByCurrentUser(message.senderId) ? @string/you : viewModel.getSenderName(message.senderId), default=Sender_Name}"
                             android:textSize="12sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent" />

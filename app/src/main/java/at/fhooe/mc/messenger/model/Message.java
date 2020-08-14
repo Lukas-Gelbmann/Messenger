@@ -9,7 +9,7 @@ public class Message {
 
     public String content;
     @NonNull
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey
     public String id;
     public String conversationId;
     public String senderId;

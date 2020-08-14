@@ -1,4 +1,4 @@
-package at.fhooe.mc.messenger
+package at.fhooe.mc.messenger.view
 
 import android.app.Activity
 import android.content.Intent
@@ -9,6 +9,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
+import at.fhooe.mc.messenger.R
 import at.fhooe.mc.messenger.model.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -18,26 +19,26 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 
 class LoginActivity : AppCompatActivity() {
-    private var mFirstNameEditText: EditText? = null
-    private var mLastNameEditText: EditText? = null
-    private var mEmailEditText: EditText? = null
-    private var mCreateButton: Button? = null
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(MainActivity.serverIp)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-     lateinit var db: AppDatabase
+
+    private var firstNameEditText: EditText? = null
+    private var lastNameEditText: EditText? = null
+    private var emailEditText: EditText? = null
+    private var createButton: Button? = null
+    private val retrofit = Retrofit.Builder().baseUrl(MainActivity.serverIp).addConverterFactory(GsonConverterFactory.create()).build()
+    lateinit var db: AppDatabase
     var isFetchDataFinished = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        mFirstNameEditText = findViewById(R.id.text_firstname)
-        mLastNameEditText = findViewById(R.id.text_lastname)
-        mEmailEditText = findViewById(R.id.text_email)
-        mCreateButton = findViewById(R.id.button_createuser)
+        firstNameEditText = findViewById(R.id.text_firstname)
+        lastNameEditText = findViewById(R.id.text_lastname)
+        emailEditText = findViewById(R.id.text_email)
+        createButton = findViewById(R.id.button_createuser)
         db = application.let {
-                Room.databaseBuilder(it, AppDatabase::class.java, MainActivity.DATABASE_NAME)
+                Room.databaseBuilder(it, AppDatabase::class.java,
+                    MainActivity.DATABASE_NAME
+                )
                     .allowMainThreadQueries().build()
             }
 
@@ -46,9 +47,9 @@ class LoginActivity : AppCompatActivity() {
 
     fun onClick(view: View) {
         val newParticipant = Participant(
-            mFirstNameEditText?.text.toString(),
-            mLastNameEditText?.text.toString(),
-            mEmailEditText?.text.toString()
+            firstNameEditText?.text.toString(),
+            lastNameEditText?.text.toString(),
+            emailEditText?.text.toString()
         )
 
 
@@ -117,7 +118,9 @@ class LoginActivity : AppCompatActivity() {
     private fun fetchAllMessagesPages(i: Int) {
         val db =
             application.let {
-                Room.databaseBuilder(it, AppDatabase::class.java, MainActivity.DATABASE_NAME)
+                Room.databaseBuilder(it, AppDatabase::class.java,
+                    MainActivity.DATABASE_NAME
+                )
                     .allowMainThreadQueries().build()
             }
         val service: GetMessageService = retrofit.create(GetMessageService::class.java)

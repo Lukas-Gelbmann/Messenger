@@ -12,7 +12,7 @@ public class Participant {
     public String lastModifiedBy;
     public String lastModifiedDate;
     @NonNull
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey
     public String id;
     public String firstName;
     public String lastName;

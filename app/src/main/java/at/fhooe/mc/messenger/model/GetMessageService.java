@@ -14,7 +14,6 @@ public interface GetMessageService {
             "Content-type: application/json"
     })
 
-
     @GET("/api/messages?sort=createdDate,asc&size=30") //e.g. api/messages?conversationId.equals=2
     Call<List<Message>> getMessagesForConversation(@Query("conversationId.equals") String conversationId ,@Query("page") int page);
 

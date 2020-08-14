@@ -5,13 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import at.fhooe.mc.messenger.MainActivity
-
 import at.fhooe.mc.messenger.R
 import at.fhooe.mc.messenger.model.AppDatabase
 import at.fhooe.mc.messenger.model.GetParticipantService
@@ -31,10 +28,7 @@ class ParticipantFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private val retrofit = Retrofit.Builder().baseUrl(MainActivity.serverIp).addConverterFactory(GsonConverterFactory.create()).build()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.participant_view, container, false)
         swipeRefreshLayout = view.findViewById(R.id.swipe_container) as SwipeRefreshLayout
         swipeRefreshLayout.setOnRefreshListener(this)
@@ -43,11 +37,8 @@ class ParticipantFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        //create listview
         viewManager = LinearLayoutManager(context)
         viewAdapter = ParticipantAdapter(context)
-
         recyclerView = requireView().findViewById<RecyclerView>(R.id.participant_list).apply {
             setHasFixedSize(true)
             layoutManager = viewManager

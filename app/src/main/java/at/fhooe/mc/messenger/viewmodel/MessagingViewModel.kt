@@ -1,20 +1,18 @@
-package at.fhooe.mc.messenger.model
+package at.fhooe.mc.messenger.viewmodel
 
 import android.app.Application
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import at.fhooe.mc.messenger.model.Message
+import at.fhooe.mc.messenger.model.MessageRepository
 import com.bumptech.glide.Glide
 
-class MessagingViewModel(
-    application: Application,
-    private var conversationId: String,
-    private var userId: String
-) : ViewModel() {
+class MessagingViewModel(application: Application, private var conversationId: String, private var userId: String) : ViewModel() {
 
-    private var messageRepository = MessageRepository(application)
-
+    private var messageRepository =
+        MessageRepository(application)
     val messages: LiveData<List<Message>> = messageRepository.getMessages(conversationId)
 
     fun sendMessage(content: String) {
@@ -26,18 +24,12 @@ class MessagingViewModel(
 
     fun messageSentByCurrentUser(senderId: String): Boolean = senderId == userId
 
-
     fun getSenderName(senderId: String): String {
         val participant = messageRepository.getParticipant(senderId)
         return participant.firstName + " " + participant.lastName
     }
 
-    fun getYou(): String{
-        return "You"
-    }
-
-    fun getSenderImageUrl(senderId: String): String =
-        messageRepository.getParticipant(senderId).avatar
+    fun getSenderImageUrl(senderId: String): String = messageRepository.getParticipant(senderId).avatar
 
     companion object{
         @JvmStatic
@@ -47,7 +39,5 @@ class MessagingViewModel(
                 Glide.with(view.context).load(url).into(view)
         }
     }
-
-
 
 }

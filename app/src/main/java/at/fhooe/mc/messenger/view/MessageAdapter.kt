@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import at.fhooe.mc.messenger.databinding.MessageItemBinding
 import at.fhooe.mc.messenger.model.Message
-import at.fhooe.mc.messenger.model.MessagingViewModel
+import at.fhooe.mc.messenger.viewmodel.MessagingViewModel
 import at.fhooe.mc.messenger.view.MessageAdapter.ViewHolder
 
 class MessageAdapter : RecyclerView.Adapter<ViewHolder>() {
@@ -21,16 +21,14 @@ class MessageAdapter : RecyclerView.Adapter<ViewHolder>() {
 
     override fun getItemCount() = messages.size
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) =
-        holder.bind(messages[position])
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(messages[position])
 
     fun setMessages(messages: List<Message>) {
         this.messages = messages
         notifyDataSetChanged()
     }
 
-    inner class ViewHolder(private val binding: MessageItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: MessageItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Message) {
             binding.message = item
             binding.viewModel = viewModel

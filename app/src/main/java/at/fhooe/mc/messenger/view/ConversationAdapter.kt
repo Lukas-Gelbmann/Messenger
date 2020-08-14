@@ -10,6 +10,7 @@ import at.fhooe.mc.messenger.model.Conversation
 
 
 class ConversationAdapter : RecyclerView.Adapter<ConversationAdapter.ConversationViewHolder>() {
+
     private var conversations: List<Conversation> = listOf()
 
     companion object {
@@ -19,7 +20,6 @@ class ConversationAdapter : RecyclerView.Adapter<ConversationAdapter.Conversatio
     fun setOnItemClickListener(clickListener: ClickListener) {
         Companion.clickListener = clickListener
     }
-
 
     interface ClickListener {
         fun onItemClick(position: Int, view: View);
@@ -38,7 +38,6 @@ class ConversationAdapter : RecyclerView.Adapter<ConversationAdapter.Conversatio
         holder.conversationTopic.text = conversations[position].topic
     }
 
-
     fun setConversations(conversations: List<Conversation>) {
         this.conversations = conversations
         notifyDataSetChanged()
@@ -48,8 +47,7 @@ class ConversationAdapter : RecyclerView.Adapter<ConversationAdapter.Conversatio
         return conversations[index]
     }
 
-    class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-        View.OnClickListener {
+    class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val conversationTopic: TextView = this.itemView.findViewById(R.id.conversation_textview)
 
         init {

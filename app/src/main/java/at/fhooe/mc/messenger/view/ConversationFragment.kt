@@ -2,18 +2,14 @@ package at.fhooe.mc.messenger.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import at.fhooe.mc.messenger.LoginActivity
-import at.fhooe.mc.messenger.MainActivity
 import at.fhooe.mc.messenger.R
 import at.fhooe.mc.messenger.model.AppDatabase
 import at.fhooe.mc.messenger.model.Conversation
@@ -35,10 +31,7 @@ class ConversationFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private val retrofit = Retrofit.Builder().baseUrl(MainActivity.serverIp).addConverterFactory(GsonConverterFactory.create()).build()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.conversation_view, container, false)
         swipeRefreshLayout = view.findViewById(R.id.swipe_container) as SwipeRefreshLayout
         swipeRefreshLayout.setOnRefreshListener(this)
@@ -65,7 +58,6 @@ class ConversationFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }
         fetchAllConversations()
     }
-
 
     override fun onRefresh() {
         fetchAllConversations()
@@ -130,11 +122,6 @@ class ConversationFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             })
         }
     }
-
-
-
-
-
 
     private fun openConversation(conversation: Conversation) {
         val intent = Intent(context, MessagingActivity::class.java)

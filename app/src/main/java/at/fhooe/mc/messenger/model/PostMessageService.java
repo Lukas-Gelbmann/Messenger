@@ -8,9 +8,7 @@ import retrofit2.http.POST;
 public interface PostMessageService {
 
     @Headers({
-
             "Content-type: application/json"
-
     })
     @POST("/api/messages")
     Call<Message> createMessage(@Body Message message);

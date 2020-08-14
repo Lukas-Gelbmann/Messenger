@@ -26,5 +26,6 @@
         android:fontFamily="sans-serif"
         android:hint="@string/topic"
         android:inputType="text"
-        android:padding="8dp" />
+        android:padding="8dp"
+        android:autofillHints="" />
 </LinearLayout>

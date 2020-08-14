@@ -12,10 +12,9 @@ import at.fhooe.mc.messenger.model.Participant
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
-class ParticipantAdapter(private var context: Context?) :
-    RecyclerView.Adapter<ParticipantAdapter.ParticipantViewHolder>() {
-    private var participants: List<Participant> = listOf()
+class ParticipantAdapter(private var context: Context?) : RecyclerView.Adapter<ParticipantAdapter.ParticipantViewHolder>() {
 
+    private var participants: List<Participant> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ParticipantViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(
@@ -23,7 +22,6 @@ class ParticipantAdapter(private var context: Context?) :
             parent,
             false
         ) as View
-        // set the view's size, margins, paddings and layout parameters
         return ParticipantViewHolder(itemView)
     }
 
@@ -38,7 +36,6 @@ class ParticipantAdapter(private var context: Context?) :
                 .into(holder.participantImage)
         }
     }
-
 
     fun setParticipants(participants: List<Participant>) {
         this.participants = participants

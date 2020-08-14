@@ -9,12 +9,13 @@ import androidx.room.PrimaryKey;
 
 @Entity
 public class Conversation implements Parcelable {
+
     public String createdBy;
     public String createdDate;
     public String lastModifiedBy;
     public String lastModifiedDate;
     @NonNull
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey
     public String id;
     public String topic;
 
@@ -32,7 +33,6 @@ public class Conversation implements Parcelable {
         this.id = data[4];
         this.topic = data[5];
     }
-
 
     @Override
     public int describeContents() {

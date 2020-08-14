@@ -1,4 +1,4 @@
-package at.fhooe.mc.messenger
+package at.fhooe.mc.messenger.view
 
 import android.app.job.JobInfo
 import android.app.job.JobScheduler
@@ -10,9 +10,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.room.Room
+import at.fhooe.mc.messenger.other.NewConversationDialogFragment
+import at.fhooe.mc.messenger.other.NotificationJobService
+import at.fhooe.mc.messenger.R
 import at.fhooe.mc.messenger.model.*
-import at.fhooe.mc.messenger.view.ConversationFragment
-import at.fhooe.mc.messenger.view.ParticipantFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import retrofit2.Call
 import retrofit2.Callback
@@ -20,7 +21,8 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MainActivity : AppCompatActivity(), NewConversationDialogFragment.NewConversationDialogListener {
+class MainActivity : AppCompatActivity(),
+    NewConversationDialogFragment.NewConversationDialogListener {
 
     companion object {
         const val JOB_NOTIFICATION_ID: Int = 1
@@ -29,7 +31,7 @@ class MainActivity : AppCompatActivity(), NewConversationDialogFragment.NewConve
         const val PARTICIPANT_ID = "1"
         const val DATABASE_NAME = "Messenger"
         //const val serverIp = "http://192.168.1.191:8080/"
-        const val serverIp = "http://10.0.0.12:8080/"
+        const val serverIp = "http://10.0.0.128:8080/"
     }
 
     private val retrofit = Retrofit.Builder().baseUrl(serverIp).addConverterFactory(GsonConverterFactory.create()).build()
@@ -70,7 +72,9 @@ class MainActivity : AppCompatActivity(), NewConversationDialogFragment.NewConve
     private fun fetchAllParticipantsPages(i: Int) {
         val db =
             application.let {
-                Room.databaseBuilder(it, AppDatabase::class.java, DATABASE_NAME)
+                Room.databaseBuilder(it, AppDatabase::class.java,
+                    DATABASE_NAME
+                )
                     .allowMainThreadQueries().build()
             }
         val participantService: GetParticipantService = retrofit.create(GetParticipantService::class.java)
@@ -138,9 +142,9 @@ class MainActivity : AppCompatActivity(), NewConversationDialogFragment.NewConve
     }
 
     override fun onDialogPositiveClick(dialog: DialogFragment, topic: String) {
-        var service =  retrofit.create(PostConversationService::class.java)
+        val service =  retrofit.create(PostConversationService::class.java)
         val conversation = Conversation(topic)
-        val call: Call<Conversation> = service!!.sendConversation(conversation)
+        val call: Call<Conversation> = service.sendConversation(conversation)
         call.enqueue(object : Callback<Conversation?> {
             override fun onResponse(
                 call: Call<Conversation?>?,
