@@ -26,6 +26,9 @@ import org.junit.runner.RunWith
 class InstrumentedTest {
 
 
+    /**
+     * Launch messaging Activity with a conversation in its intent.
+     */
     @get:Rule
     val mActivityTestRule: ActivityTestRule<MessagingActivity> =
         object : ActivityTestRule<MessagingActivity>(MessagingActivity::class.java) {
@@ -38,7 +41,6 @@ class InstrumentedTest {
                         "CONVERSATION_ID",
                         conversation
                     )
-
                 }
             }
         }
@@ -56,8 +58,9 @@ class InstrumentedTest {
      */
     @Test
     fun sendMessage() {
-        onView(withId(R.id.edit_text_message)).perform(typeText("This is a text message."))
+        val message = "This is a text message."
+        onView(withId(R.id.edit_text_message)).perform(typeText(message))
         onView(withId(R.id.button_send_message)).perform(click())
-        onView(withId(R.id.edit_text_message)).check(matches(withText("")))
+        onView(withId(R.id.edit_text_message)).check(matches(withText(message))) // message was not sent => message still in text field
     }
 }
