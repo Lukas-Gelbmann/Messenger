@@ -11,7 +11,7 @@ The app works offline too!
 
 ## Information for setup / usage:
 
-1. Variable for IP adress found in MainActivity!
+1. Variable for IP adress found in MainActivity
 
 2. Everyone can see all messages ->
     * all messages get send from our app to receiverId = 1
