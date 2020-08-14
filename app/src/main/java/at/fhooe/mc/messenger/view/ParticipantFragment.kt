@@ -27,8 +27,10 @@ class ParticipantFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     lateinit var participants: List<Participant>
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private val retrofit = Retrofit.Builder().baseUrl(MainActivity.serverIp).addConverterFactory(GsonConverterFactory.create()).build()
+    lateinit var db: AppDatabase
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        db = AppDatabase.getDatabase(context)
         val view = inflater.inflate(R.layout.participant_view, container, false)
         swipeRefreshLayout = view.findViewById(R.id.swipe_container) as SwipeRefreshLayout
         swipeRefreshLayout.setOnRefreshListener(this)
@@ -52,10 +54,6 @@ class ParticipantFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun fetchAllParticipants() {
-        val db = context?.let {
-            Room.databaseBuilder(it, AppDatabase::class.java, MainActivity.DATABASE_NAME)
-                .allowMainThreadQueries().build()
-        }
         var participantCount: Int
         val participantService: GetParticipantService = retrofit.create(GetParticipantService::class.java)
         val participantsCountCall: Call<Int> = participantService.fetchParticipantCount()
@@ -80,10 +78,6 @@ class ParticipantFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun fetchAllParticipantsPages(i: Int) {
-        val db = context?.let {
-                Room.databaseBuilder(it, AppDatabase::class.java, MainActivity.DATABASE_NAME)
-                    .allowMainThreadQueries().build()
-            }
         val participantService: GetParticipantService = retrofit.create(GetParticipantService::class.java)
         for (page in 0..i) {
             val participantsCall: Call<List<Participant>> = participantService.fetchAllParticipants(page)

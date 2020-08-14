@@ -30,9 +30,9 @@ class NewConversationDialogFragment : DialogFragment() {
         return activity?.let {
             val builder = AlertDialog.Builder(it)
             val inflater = requireActivity().layoutInflater
-            val mView = inflater.inflate(R.layout.new_conversation_dialog, null)
-            val editText = mView?.findViewById<EditText>(R.id.conversation_topic)
-            builder.setView(mView)
+            val view = inflater.inflate(R.layout.new_conversation_dialog, null)
+            val editText = view?.findViewById<EditText>(R.id.conversation_topic)
+            builder.setView(view)
                 .setPositiveButton(getString(R.string.create)) { _, _ ->
                     if (!editText?.text.isNullOrEmpty())
                         listener.onDialogPositiveClick(this, editText?.text.toString())

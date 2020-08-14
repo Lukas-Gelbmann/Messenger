@@ -11,7 +11,7 @@ import java.util.List;
 @Dao
 public interface ConversationDao {
 
-    @Query("SELECT * FROM conversation")
+    @Query("SELECT * FROM conversation ORDER BY createdDate")
     List<Conversation> getConversations();
 
     @Query("SELECT * FROM conversation WHERE id = :id")

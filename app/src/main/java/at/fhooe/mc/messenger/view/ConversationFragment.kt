@@ -30,9 +30,11 @@ class ConversationFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     lateinit var conversations: List<Conversation>
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private val retrofit = Retrofit.Builder().baseUrl(MainActivity.serverIp).addConverterFactory(GsonConverterFactory.create()).build()
+    lateinit var db: AppDatabase
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.conversation_view, container, false)
+        db = AppDatabase.getDatabase(context)
         swipeRefreshLayout = view.findViewById(R.id.swipe_container) as SwipeRefreshLayout
         swipeRefreshLayout.setOnRefreshListener(this)
         return view
@@ -40,8 +42,6 @@ class ConversationFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        //create listview
         viewManager = LinearLayoutManager(context)
         viewAdapter = ConversationAdapter()
         viewAdapter.setOnItemClickListener(object : ClickListener {
@@ -50,7 +50,6 @@ class ConversationFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 openConversation(conversation)
             }
         })
-
         recyclerView = requireView().findViewById<RecyclerView>(R.id.conversation_list).apply {
             setHasFixedSize(true)
             layoutManager = viewManager
@@ -64,10 +63,6 @@ class ConversationFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun fetchAllConversations() {
-        val db = context?.let {
-            Room.databaseBuilder(it, AppDatabase::class.java, MainActivity.DATABASE_NAME)
-                .allowMainThreadQueries().build()
-        }
         var conversationCount: Int
         val conversationService: GetConversationService = retrofit.create(GetConversationService::class.java)
         val conversationsCountCall: Call<Int> = conversationService.fetchConversationCount()
@@ -92,10 +87,6 @@ class ConversationFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun fetchAllConversationsPages(i: Int) {
-        val db = context?.let {
-            Room.databaseBuilder(it, AppDatabase::class.java, MainActivity.DATABASE_NAME)
-                .allowMainThreadQueries().build()
-        }
         val conversationService: GetConversationService = retrofit.create(GetConversationService::class.java)
         for (page in 0..i) {
             val conversationsCall: Call<List<Conversation>> = conversationService.fetchAllConversations(page)

@@ -10,7 +10,7 @@ import java.util.List;
 @Dao
 public interface ParticipantDao {
 
-    @Query("SELECT * FROM participant")
+    @Query("SELECT * FROM participant ORDER BY createdDate")
     List<Participant> getParticipants();
 
     @Query("SELECT * FROM participant WHERE id = :id")

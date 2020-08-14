@@ -35,12 +35,7 @@ class LoginActivity : AppCompatActivity() {
         lastNameEditText = findViewById(R.id.text_lastname)
         emailEditText = findViewById(R.id.text_email)
         createButton = findViewById(R.id.button_createuser)
-        db = application.let {
-                Room.databaseBuilder(it, AppDatabase::class.java,
-                    MainActivity.DATABASE_NAME
-                )
-                    .allowMainThreadQueries().build()
-            }
+        db = AppDatabase.getDatabase(applicationContext)
 
         fetchAllMessages()
     }
@@ -52,13 +47,8 @@ class LoginActivity : AppCompatActivity() {
             emailEditText?.text.toString()
         )
 
-
         if (!isFetchDataFinished)
-            Toast.makeText(
-                applicationContext,
-                getString(R.string.user_creation_failed),
-                Toast.LENGTH_LONG
-            ).show()
+            Toast.makeText(applicationContext, getString(R.string.user_creation_failed), Toast.LENGTH_LONG).show()
         else {
             val service = retrofit.create(PostParticipantService::class.java)
             val call: Call<Participant> = service.sendParticipant(newParticipant)

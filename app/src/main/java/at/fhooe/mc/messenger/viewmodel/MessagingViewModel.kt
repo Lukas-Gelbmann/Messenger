@@ -6,7 +6,6 @@ import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import at.fhooe.mc.messenger.model.Message
-import at.fhooe.mc.messenger.model.MessageRepository
 import com.bumptech.glide.Glide
 
 class MessagingViewModel(application: Application, private var conversationId: String, private var userId: String) : ViewModel() {

@@ -40,11 +40,7 @@ class NotificationJobService : JobService() {
 
     override fun onStartJob(params: JobParameters?): Boolean {
         Log.d(MainActivity.TAG, "Running service now..")
-        db = applicationContext.let {
-            Room.databaseBuilder(it, AppDatabase::class.java, MainActivity.DATABASE_NAME)
-                .allowMainThreadQueries().build()
-        }
-
+        db = AppDatabase.getDatabase(applicationContext)
         createNotificationChannel()
         checkForNewMessages()
         scheduleRefresh()

@@ -70,13 +70,8 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun fetchAllParticipantsPages(i: Int) {
-        val db =
-            application.let {
-                Room.databaseBuilder(it, AppDatabase::class.java,
-                    DATABASE_NAME
-                )
-                    .allowMainThreadQueries().build()
-            }
+        val db = AppDatabase.getDatabase(applicationContext)
+
         val participantService: GetParticipantService = retrofit.create(GetParticipantService::class.java)
         for (page in 0..i) {
             val participantsCall: Call<List<Participant>> = participantService.fetchAllParticipants(page)
