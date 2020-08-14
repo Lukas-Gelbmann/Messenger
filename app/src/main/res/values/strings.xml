@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Messenger</string>
+    <string name="app_name">Forum Messenger</string>
     <string name="users">Users</string>
     <string name="conversations">Conversations</string>
     <string name="first_name">First Name</string>
