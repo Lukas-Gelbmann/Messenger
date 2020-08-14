@@ -17,11 +17,11 @@ class MessagingViewModel(
 
     val messages: LiveData<List<Message>> = messageRepository.getMessages(conversationId)
 
-    fun sendMessage(content: String) {
+    fun sendMessage(content: String): Boolean {
         if (content == "")
-            return // don't send empty messages
+            return false // don't send empty messages
 
-        messageRepository.sendMessage(content, conversationId, userId)
+        return messageRepository.sendMessage(content, conversationId, userId)
     }
 
     fun messageSentByCurrentUser(senderId: String): Boolean = senderId == userId
@@ -39,7 +39,7 @@ class MessagingViewModel(
     fun getSenderImageUrl(senderId: String): String =
         messageRepository.getParticipant(senderId).avatar
 
-    companion object{
+    companion object {
         @JvmStatic
         @BindingAdapter("imageUrl")
         fun loadImage(view: ImageView, url: String?) {
@@ -47,7 +47,6 @@ class MessagingViewModel(
                 Glide.with(view.context).load(url).into(view)
         }
     }
-
 
 
 }

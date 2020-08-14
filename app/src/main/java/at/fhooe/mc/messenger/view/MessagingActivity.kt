@@ -3,7 +3,6 @@ package at.fhooe.mc.messenger.view
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -43,8 +42,8 @@ class MessagingActivity : AppCompatActivity() {
 
         messageText = findViewById(R.id.edit_text_message)
         findViewById<Button>(R.id.button_send_message).setOnClickListener {
-            mModel.sendMessage(messageText.text.toString())
-            messageText.setText("")
+            val success = mModel.sendMessage(messageText.text.toString())
+            if (success) messageText.setText("")
         }
 
         userId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("userId", "0")!!
