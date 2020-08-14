@@ -47,9 +47,10 @@ class LoginActivity : AppCompatActivity() {
             emailEditText?.text.toString()
         )
 
-        if (!isFetchDataFinished)
+        if (!isFetchDataFinished) {
             Toast.makeText(applicationContext, getString(R.string.user_creation_failed), Toast.LENGTH_LONG).show()
-        else {
+            fetchAllMessages()
+        } else {
             val service = retrofit.create(PostParticipantService::class.java)
             val call: Call<Participant> = service.sendParticipant(newParticipant)
             call.enqueue(object : Callback<Participant?> {
@@ -106,13 +107,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun fetchAllMessagesPages(i: Int) {
-        val db =
-            application.let {
-                Room.databaseBuilder(it, AppDatabase::class.java,
-                    MainActivity.DATABASE_NAME
-                )
-                    .allowMainThreadQueries().build()
-            }
         val service: GetMessageService = retrofit.create(GetMessageService::class.java)
         for (page in 0..i) {
             val call: Call<List<Message>> = service.getMessagesForParticipant(MainActivity.PARTICIPANT_ID,page)

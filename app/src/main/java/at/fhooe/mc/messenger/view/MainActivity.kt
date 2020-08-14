@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
-import androidx.room.Room
 import at.fhooe.mc.messenger.other.NewConversationDialogFragment
 import at.fhooe.mc.messenger.other.NotificationJobService
 import at.fhooe.mc.messenger.R

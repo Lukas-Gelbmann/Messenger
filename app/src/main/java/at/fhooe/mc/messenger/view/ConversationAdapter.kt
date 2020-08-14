@@ -22,7 +22,7 @@ class ConversationAdapter : RecyclerView.Adapter<ConversationAdapter.Conversatio
     }
 
     interface ClickListener {
-        fun onItemClick(position: Int, view: View);
+        fun onItemClick(position: Int, view: View)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ConversationViewHolder {

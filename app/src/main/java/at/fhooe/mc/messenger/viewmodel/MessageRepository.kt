@@ -5,7 +5,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.room.Room
 import at.fhooe.mc.messenger.view.MainActivity
 import at.fhooe.mc.messenger.R
 import at.fhooe.mc.messenger.model.*
@@ -17,7 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MessageRepository(private val application: Application) {
 
-    private val messages: MutableLiveData<List<Message>> = MutableLiveData<List<Message>>()
+    private val messages: MutableLiveData<List<Message>> = MutableLiveData()
     private val retrofit = Retrofit.Builder().baseUrl(MainActivity.serverIp).addConverterFactory(GsonConverterFactory.create()).build()
     lateinit var db: AppDatabase
 

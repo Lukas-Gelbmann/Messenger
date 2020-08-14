@@ -13,7 +13,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.room.Room
 import at.fhooe.mc.messenger.R
 import at.fhooe.mc.messenger.model.*
 import at.fhooe.mc.messenger.view.MainActivity

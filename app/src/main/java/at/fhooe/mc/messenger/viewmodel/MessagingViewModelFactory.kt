@@ -4,12 +4,8 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
-class MessagingViewModelFactory(application: Application, conversationID: String, userID: String) :
+class MessagingViewModelFactory(private var application: Application, private var conversationID: String, private var userID: String) :
     ViewModelProvider.Factory {
-
-    private var application: Application = application
-    private var conversationID: String = conversationID
-    private var userID: String = userID
 
 
     @Suppress("UNCHECKED_CAST")

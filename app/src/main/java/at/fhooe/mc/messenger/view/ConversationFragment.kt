@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import at.fhooe.mc.messenger.R
 import at.fhooe.mc.messenger.model.AppDatabase
@@ -72,14 +71,14 @@ class ConversationFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                     conversationCount = response.body()!!
                     fetchAllConversationsPages(conversationCount/30)
                 } else {
-                    conversations = db!!.conversationDao().conversations
+                    conversations = db.conversationDao().conversations
                     viewAdapter.setConversations(conversations)
                     swipeRefreshLayout.isRefreshing = false
                 }
             }
 
             override fun onFailure(call: Call<Int>, t: Throwable) {
-                conversations = db!!.conversationDao().conversations
+                conversations = db.conversationDao().conversations
                 viewAdapter.setConversations(conversations)
                 swipeRefreshLayout.isRefreshing = false
             }
@@ -95,17 +94,17 @@ class ConversationFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                     if (response.isSuccessful) {
                         val conversations = response.body()!!
                         for (conversation in conversations)
-                            db?.conversationDao()?.insert(conversation)
+                            db.conversationDao()?.insert(conversation)
                     }
                     if (page == i)
-                        conversations = db!!.conversationDao().conversations
+                        conversations = db.conversationDao().conversations
                         viewAdapter.setConversations(conversations)
                         swipeRefreshLayout.isRefreshing = false
                 }
 
                 override fun onFailure(call: Call<List<Conversation>>, t: Throwable) {
                     if (page == i) {
-                        conversations = db!!.conversationDao().conversations
+                        conversations = db.conversationDao().conversations
                         viewAdapter.setConversations(conversations)
                         swipeRefreshLayout.isRefreshing = false
                     }

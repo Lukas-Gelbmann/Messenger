@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import at.fhooe.mc.messenger.R
 import at.fhooe.mc.messenger.model.AppDatabase
@@ -63,14 +62,14 @@ class ParticipantFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                     participantCount = response.body()!!
                     fetchAllParticipantsPages(participantCount/30)
                 }else {
-                    participants = db!!.participantDao().participants
+                    participants = db.participantDao().participants
                     viewAdapter.setParticipants(participants)
                     swipeRefreshLayout.isRefreshing = false
                 }
             }
 
             override fun onFailure(call: Call<Int>, t: Throwable) {
-                participants = db!!.participantDao().participants
+                participants = db.participantDao().participants
                 viewAdapter.setParticipants(participants)
                 swipeRefreshLayout.isRefreshing = false
             }
@@ -86,10 +85,10 @@ class ParticipantFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                     if (response.isSuccessful) {
                         val participants = response.body()!!
                         for (participant in participants)
-                            db?.participantDao()?.insert(participant)
+                            db.participantDao()?.insert(participant)
                     }
                     if (page == i) {
-                        participants = db!!.participantDao().participants
+                        participants = db.participantDao().participants
                         viewAdapter.setParticipants(participants)
                         swipeRefreshLayout.isRefreshing = false
                     }
@@ -97,7 +96,7 @@ class ParticipantFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
                 override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
                     if (page == i) {
-                        participants = db!!.participantDao().participants
+                        participants = db.participantDao().participants
                         viewAdapter.setParticipants(participants)
                         swipeRefreshLayout.isRefreshing = false
                     }
