@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity(), NewConversationDialogFragment.NewConve
         const val PARTICIPANT_ID = "1"
         const val DATABASE_NAME = "Messenger"
         //const val serverIp = "http://192.168.1.191:8080/"
-        const val serverIp = "http://10.0.0.128:8080/"
+        const val serverIp = "http://10.0.0.12:8080/"
     }
 
     private val retrofit = Retrofit.Builder().baseUrl(serverIp).addConverterFactory(GsonConverterFactory.create()).build()

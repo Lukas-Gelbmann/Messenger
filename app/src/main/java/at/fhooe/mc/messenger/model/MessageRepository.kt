@@ -2,15 +2,18 @@ package at.fhooe.mc.messenger.model
 
 import android.app.Application
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
 import at.fhooe.mc.messenger.MainActivity
+import at.fhooe.mc.messenger.R
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import kotlin.coroutines.coroutineContext
 
 class MessageRepository(private val application: Application) {
 
@@ -28,6 +31,7 @@ class MessageRepository(private val application: Application) {
     }
 
     private fun fetchAllMessages(conversationId: String) {
+        val db = application.let { Room.databaseBuilder(it, AppDatabase::class.java, MainActivity.DATABASE_NAME).allowMainThreadQueries().build() }
         var count: Int
         val service: GetParticipantService = retrofit.create(GetParticipantService::class.java)
         val countCall: Call<Int> = service.fetchParticipantCount()
@@ -36,10 +40,15 @@ class MessageRepository(private val application: Application) {
                 if (response.isSuccessful) {
                     count = response.body()!!
                     fetchAllMessagesPages(count / 30, conversationId)
+                } else {
+                    messages.value = db.messageDao().getMessages(conversationId)
+
                 }
             }
 
             override fun onFailure(call: Call<Int>, t: Throwable) {
+                messages.value = db.messageDao().getMessages(conversationId)
+
             }
         })
     }
@@ -82,13 +91,14 @@ class MessageRepository(private val application: Application) {
                 response: Response<Message?>
             ) {
                 if (response.isSuccessful) {
-                    // refresh messages
                     messages.postValue(getMessages(conversationId).value)
+                } else {
+                    Toast.makeText(application.applicationContext,application.applicationContext.getString(R.string.sending_message_failed), Toast.LENGTH_LONG ).show()
                 }
             }
 
             override fun onFailure(call: Call<Message?>, t: Throwable) {
-                Log.e(MainActivity.TAG, "sending data failed")
+                Toast.makeText(application.applicationContext,application.applicationContext.getString(R.string.sending_message_failed), Toast.LENGTH_LONG ).show()
             }
         })
     }

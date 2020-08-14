@@ -72,6 +72,10 @@ class ConversationFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun fetchAllConversations() {
+        val db = context?.let {
+            Room.databaseBuilder(it, AppDatabase::class.java, MainActivity.DATABASE_NAME)
+                .allowMainThreadQueries().build()
+        }
         var conversationCount: Int
         val conversationService: GetConversationService = retrofit.create(GetConversationService::class.java)
         val conversationsCountCall: Call<Int> = conversationService.fetchConversationCount()
@@ -80,10 +84,17 @@ class ConversationFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 if (response.isSuccessful) {
                     conversationCount = response.body()!!
                     fetchAllConversationsPages(conversationCount/30)
+                } else {
+                    conversations = db!!.conversationDao().conversations
+                    viewAdapter.setConversations(conversations)
+                    swipeRefreshLayout.isRefreshing = false
                 }
             }
 
             override fun onFailure(call: Call<Int>, t: Throwable) {
+                conversations = db!!.conversationDao().conversations
+                viewAdapter.setConversations(conversations)
+                swipeRefreshLayout.isRefreshing = false
             }
         })
     }

@@ -19,4 +19,5 @@
     <string name="create">Create</string>
     <string name="cancel">Cancel</string>
     <string name="new_message_from">\"New Message from \"</string>
+    <string name="sending_message_failed">Sending message failed</string>
 </resources>

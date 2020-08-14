@@ -61,6 +61,10 @@ class ParticipantFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun fetchAllParticipants() {
+        val db = context?.let {
+            Room.databaseBuilder(it, AppDatabase::class.java, MainActivity.DATABASE_NAME)
+                .allowMainThreadQueries().build()
+        }
         var participantCount: Int
         val participantService: GetParticipantService = retrofit.create(GetParticipantService::class.java)
         val participantsCountCall: Call<Int> = participantService.fetchParticipantCount()
@@ -69,10 +73,17 @@ class ParticipantFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 if (response.isSuccessful) {
                     participantCount = response.body()!!
                     fetchAllParticipantsPages(participantCount/30)
+                }else {
+                    participants = db!!.participantDao().participants
+                    viewAdapter.setParticipants(participants)
+                    swipeRefreshLayout.isRefreshing = false
                 }
             }
 
             override fun onFailure(call: Call<Int>, t: Throwable) {
+                participants = db!!.participantDao().participants
+                viewAdapter.setParticipants(participants)
+                swipeRefreshLayout.isRefreshing = false
             }
         })
     }

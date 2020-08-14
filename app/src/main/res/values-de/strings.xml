@@ -20,4 +20,6 @@
     <string name="create">Erstellen</string>
     <string name="cancel">Abbrechen</string>
     <string name="new_message_from">\"Neue Nachricht von \"</string>
+    <string name="sending_message_failed">Nachricht senden fehlgeschlagen</string>
+
 </resources>

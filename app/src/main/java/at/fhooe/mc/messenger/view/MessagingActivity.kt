@@ -50,7 +50,6 @@ class MessagingActivity : AppCompatActivity() {
         userId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("userId", "0")!!
         conversation = intent.getParcelableExtra<Conversation>("CONVERSATION_ID")!!
         title = conversation.topic
-        Toast.makeText(applicationContext,conversation.topic.toString(),Toast.LENGTH_LONG).show()
 
         val model: MessagingViewModel by viewModels {
             MessagingViewModelFactory(
